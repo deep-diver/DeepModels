@@ -1,0 +1,5 @@
+*.tar.gz
+*.pyc
+*.floydexpt
+*.floydignore
+*.yml
