@@ -18,11 +18,11 @@ class DownloadProgress(tqdm):
         self.last_block = block_num
 
 class Dataset:
-    def __init__(self, name, path, num_batch=1):
+    def __init__(self, name, path, num_classes=-1, num_batch=1):
         self.name = name
         self.path = path
         self.num_batch = num_batch
-        self.num_classes = -1
+        self.num_classes = num_classes
 
         self.download()
         self.preprocess_and_save_data()
@@ -52,7 +52,7 @@ class Dataset:
         pickle.dump((features, labels), open(filename, 'wb'))
 
     def one_hot_encode(self, x):
-        encoded = np.zeros((len(x), 10))
+        encoded = np.zeros((len(x), self.num_classes))
 
         for idx, val in enumerate(x):
             encoded[idx][val] = 1

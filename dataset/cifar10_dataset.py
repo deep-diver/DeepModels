@@ -15,10 +15,9 @@ from dataset.dataset import DownloadProgress
 
 class Cifar10(Dataset):
     def __init__(self):
-        Dataset.__init__(self, name='Cifar-10', path='cifar-10-batches-py', num_batch=5)
+        Dataset.__init__(self, name='Cifar-10', path='cifar-10-batches-py', num_classes=10, num_batch=5)
         self.width = 32
         self.height = 32
-        self.num_classes = 10
 
     def download(self):
         if not isfile('cifar-10-python.tar.gz'):
@@ -48,7 +47,7 @@ class Cifar10(Dataset):
         return features, labels
 
     def preprocess_and_save_data(self, valid_ratio=0.1):
-        n_batches = 5
+        n_batches = self.num_batch
         valid_features = []
         valid_labels = []
         flag = True
