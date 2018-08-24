@@ -11,6 +11,16 @@ class VGG(ImgClfModel):
     def __init__(self):
         ImgClfModel.__init__(self, scale_to_imagenet=True)
 
+        
+    """
+        types
+        A : 11 weight layers
+        A-LRN : 11 weight layers with Local Response Normalization
+        B : 13 weight layers
+        C : 16 weight layers with 1D conv layers
+        D : 16 weight layers
+        E : 19 weight layers
+    """
     def create_model(self, input, options):
         if options is None:
             raise TypeError
