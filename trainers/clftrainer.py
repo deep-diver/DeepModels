@@ -36,10 +36,13 @@ class ClfTrainer:
 
     def train(self, input, output,
                     cost_func, optimizer, accuracy,
-                    epochs, batch_size, save_model_path):
+                    epochs, batch_size, save_model_path,
+                    save_every_epoch=1):
 
         loss = tf.identity(cost_func, 'loss')
         accuracy = tf.identity(accuracy, 'accuracy')
+
+        saver = tf.train.Saver(max_to_keep=None)
 
         with tf.Session() as sess:
             print('global_variables_initializer...')
@@ -59,18 +62,18 @@ class ClfTrainer:
                     valid_acc = self.__accuracy_in_valid_set__(sess, input, output, accuracy, batch_size)
                     print('Validation Accuracy {:.6f}'.format(valid_acc))
 
-            # Save Model
-            saver = tf.train.Saver()
-            save_path = saver.save(sess, save_model_path)
+                if epoch+1 % save_every_epoch == 0:
+                    print('epoch: {} is saved...'.format(epoch+1))
+                    saver.save(sess, save_model_path, global_step=epoch+1)
 
-    def train_from_ckpt(self, epochs, batch_size, save_model_path, save_model_to):
+    def train_from_ckpt(self, epochs, batch_size, save_model_from, save_model_to, save_every_epoch=1):
         loaded_graph = tf.Graph()
 
-        with tf.Session(graph=loaded_graph) as sess:
-            loader = tf.train.import_meta_graph(save_model_path + '.meta')
-            loader.restore(sess, save_model_path)
+        saver = tf.train.Saver(max_to_keep=None)
 
-            # sess.run(print([n.name for n in loaded_graph.as_graph_def().node]))
+        with tf.Session(graph=loaded_graph) as sess:
+            loader = tf.train.import_meta_graph(save_model_from + '.meta')
+            loader.restore(sess, save_model_from)
 
             input = loaded_graph.get_tensor_by_name('input:0')
             output = loaded_graph.get_tensor_by_name('output:0')
@@ -90,6 +93,5 @@ class ClfTrainer:
                     valid_acc = self.__accuracy_in_valid_set__(sess, input, output, accuracy, batch_size)
                     print('Validation Accuracy {:.6f}'.format(valid_acc))
 
-            # Save Model
-            saver = tf.train.Saver()
-            save_path = saver.save(sess, save_model_to)
+                if epoch+1 % save_every_epoch == 0:
+                    saver.save(sess, save_model_path, global_step=epoch)
