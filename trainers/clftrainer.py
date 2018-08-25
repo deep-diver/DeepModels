@@ -94,4 +94,32 @@ class ClfTrainer:
                     print('Validation Accuracy {:.6f}'.format(valid_acc))
 
                 if epoch+1 % save_every_epoch == 0:
-                    saver.save(sess, save_model_path, global_step=epoch)
+                    saver.save(sess, save_model_to, global_step=epoch+1)
+
+    def transfer_learning(self, input, output,
+                                cost_func, optimizer, accuracy,
+                                epochs, batch_size,
+                                save_model_from, save_model_to, save_every_epoch=1):
+
+        saver = tf.train.Saver(max_to_keep=None)
+
+        with tf.Session() as sess:
+            sess.run(tf.global_variables_initializer())
+
+            loader = tf.train.import_meta_graph(save_model_from + '.meta')
+            loader.restore(sess, save_model_from)
+
+            print('starting training ... ')
+            for epoch in range(epochs):
+                n_batches = self.clf_dataset.num_batch
+
+                for batch_i in range(1, n_batches + 1):
+                    loss = self.__train__(sess, input, output, batch_i, batch_size, cost_func, optimizer, True)
+                    print('Epoch {:>2}, {} Batch {}: '.format(epoch + 1, self.clf_dataset.name, batch_i), end='')
+                    print('Avg. Loss: {} '.format(loss), end='')
+
+                    valid_acc = self.__accuracy_in_valid_set__(sess, input, output, accuracy, batch_size)
+                    print('Validation Accuracy {:.6f}'.format(valid_acc))
+
+                if epoch+1 % save_every_epoch == 0:
+                    saver.save(sess, save_model_to, global_step=epoch+1)
