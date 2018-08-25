@@ -64,11 +64,3 @@ class Dataset:
 
     def load_preprocess_training_batch(self, batch_id, batch_size, scale_to_imagenet=False):
         raise NotImplementedError
-
-
-# class Cifar100(Dataset):
-#     def __init__(self):
-#         Dataset.__init__('Cifar-100')
-#         self.width = 32
-#         self.height = 32
-#         self.num_classes = 100
