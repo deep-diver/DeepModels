@@ -17,7 +17,6 @@ class ImgClfModel:
                 if self.scale_to_imagenet:
                     width = 224
                     height = 224
-                    print('scale_to_imagenet = Trie')
 
                 self.num_classes = dataset.num_classes
                 input = tf.placeholder(tf.float32, [None, width, height, 3], name='input')
@@ -30,4 +29,7 @@ class ImgClfModel:
             raise TypeError
 
     def create_model(self, input, options=None):
+        raise NotImplementedError
+
+    def load_pretrained_model(self, save_model_from):
         raise NotImplementedError
