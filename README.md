@@ -9,15 +9,31 @@ There are 3 main parts, and each part corresponds to a class.
 
 ## Pre-defined Classes
 #### Datasets
-- CIFAR-10
-- CIFAR-100
+- **CIFAR-10**
+  - [Information page link](https://www.cs.toronto.edu/~kriz/cifar.html)
+  - 10 classes of image in size of 32x32
+- **CIFAR-100**
+  - [Information page link](https://www.cs.toronto.edu/~kriz/cifar.html)
+  - 100 classes of image in size of 32x32  
 
 #### Models
-- AlexNet
-- VGG (model type = [A | A-LRN | B | C | D | E])
+- **AlexNet**
+- **VGG** (model type = [A | A-LRN | B | C | D | E])
+  - **A:** 11 layers
+  - **A-LRN:** 11 layers with LRN (Local Response Normalization)
+  - **B:** 13 layers
+  - **C:** 13 layers with additional convolutional layer whose kernel size is 1x1
+  - **D:** 16 layers (known as VGG16)
+  - **E:** 19 layers (known as VGG19)
+- **GoogLeNet** (coming soon)
 
 #### Trainers
 - ClfTrainer: Trainer for image classification like ILSVRC
+
+## Pre-trained accuracy (coming soon)
+- AlexNet
+- VGG
+- GoogLeNet
 
 ## Example Usage Code Blocks
 #### Define hyper-parameters
