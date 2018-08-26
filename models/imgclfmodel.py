@@ -31,5 +31,5 @@ class ImgClfModel:
     def create_model(self, input, options=None):
         raise NotImplementedError
 
-    def load_pretrained_model(self, save_model_from):
+    def load_pretrained_model(self, save_model_from, options=None):
         raise NotImplementedError
