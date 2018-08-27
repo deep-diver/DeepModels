@@ -23,6 +23,9 @@ There are 3 main parts, and each part corresponds to a class.
   - 100 classes of colored images in size of 32x32
   - 600 images per class
   - 500 training images, 100 testing images per class
+- **Things to be added**
+  - **[EMNIST](https://www.nist.gov/itl/iad/image-group/emnist-dataset)** (extension of MNIST to handwritten letters)
+
 
 #### Models
 - **[AlexNet](https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf)**
