@@ -15,7 +15,7 @@ from models.vgg import VGG
 from trainers.clftrainer import ClfTrainer
 
 learning_rate = 0.0001
-epochs = 1
+epochs = 2
 batch_size = 64
 
 def test_alexnet_transfer_from_cifar10_to_cifar100(save_model_from, save_model_to):
@@ -119,10 +119,10 @@ def main():
     # test_alexnet_cifar10_train('./alexnet_cifar10.ckpt')
 
     # Testment #2
-    # test_alexnet_cifar10_train_resume('/ckpt/alexnet_cifar10.ckpt-1', './alexnet_cifar10.ckpt')
+    test_alexnet_cifar10_train_resume('./alexnet_cifar10.ckpt-3', './alexnet_cifar10.ckpt')
 
     # Testment #3
-    test_alexnet_transfer_from_cifar10_to_cifar100('/ckpt/alexnet_cifar10.ckpt-1', './alexnet_cifar100.ckpt')
+    # test_alexnet_transfer_from_cifar10_to_cifar100('/ckpt/alexnet_cifar10.ckpt-1', './alexnet_cifar100.ckpt')
 
 if __name__ == "__main__":
     main()
