@@ -62,7 +62,7 @@ class ClfTrainer:
                     valid_acc = self.__accuracy_in_valid_set__(sess, input, output, accuracy, batch_size)
                     print('Validation Accuracy {:.6f}'.format(valid_acc))
 
-                if epoch+1 % save_every_epoch == 0:
+                if epoch % save_every_epoch == 0:
                     print('epoch: {} is saved...'.format(epoch+1))
                     saver.save(sess, save_model_path, global_step=epoch+1)
 
@@ -92,7 +92,7 @@ class ClfTrainer:
                     valid_acc = self.__accuracy_in_valid_set__(sess, input, output, accuracy, batch_size)
                     print('Validation Accuracy {:.6f}'.format(valid_acc))
 
-                if epoch+1 % save_every_epoch == 0:
+                if epoch % save_every_epoch == 0:
                     saver.save(sess, save_model_to, global_step=epoch+1)
 
     def transfer_learning(self, input, output,
@@ -119,5 +119,5 @@ class ClfTrainer:
                     valid_acc = self.__accuracy_in_valid_set__(sess, input, output, accuracy, batch_size)
                     print('Validation Accuracy {:.6f}'.format(valid_acc))
 
-                if epoch+1 % save_every_epoch == 0:
+                if epoch % save_every_epoch == 0:
                     saver.save(sess, save_model_to, global_step=epoch+1)
