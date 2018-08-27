@@ -12,22 +12,22 @@ class GoogLeNet(ImgClfModel):
     def __init__(self):
         ImgClfModel.__init__(self, scale_to_imagenet=True)
 
-    def create_model(self, input, options):
+    def create_model(self, input, options=None):
         # STEM Network
         self.conv2d_1 = conv2d(input, num_outputs=64,
                     kernel_size=[7,7], stride=2, padding="SAME",
                     activation_fn=tf.nn.relu)
-        self.pool_1 = max_pool2d(self.conv2d_1, kernel_size=[3,3], stride=2)
+        self.pool_1 = max_pool2d(self.conv2d_1, kernel_size=[3,3], stride=2, padding='SAME')
         self.lrn_1 = tf.nn.local_response_normalization(self.pool_1, bias=2, alpha=0.0001,beta=0.75)
 
-        self.conv2d_2 = conv2d(input, num_outputs=64,
-                    kernel_size=[1,1], stride=1, padding="SAME",
-                    activation_fn=tf.nn.relu)
-        self.conv2d_3 = conv2d(input, num_outputs=192,
-                    kernel_size=[3,3], stride=1, padding="SAME",
-                    activation_fn=tf.nn.relu)
+        self.conv2d_2 = conv2d(self.lrn_1, num_outputs=64,
+                                kernel_size=[1,1], stride=1, padding="SAME",
+                                activation_fn=tf.nn.relu)
+        self.conv2d_3 = conv2d(self.conv2d_2, num_outputs=192,
+                                kernel_size=[3,3], stride=1, padding="SAME",
+                                activation_fn=tf.nn.relu)
         self.lrn_2 = tf.nn.local_response_normalization(self.conv2d_3, bias=2, alpha=0.0001,beta=0.75)
-        self.pool_2 = max_pool2d(self.lrn_2, kernel_size=[3,3], stride=2)
+        self.pool_2 = max_pool2d(self.lrn_2, kernel_size=[3,3], stride=2, padding='SAME')
 
         # Inception (3a)
         conv2d_1 = conv2d(self.pool_2, num_outputs=64,
@@ -48,11 +48,11 @@ class GoogLeNet(ImgClfModel):
                     kernel_size=[5,5], stride=1, padding="SAME",
                     activation_fn=tf.nn.relu)
 
-        conv2d_4 = max_pool2d(self.pool_2, kernel_size=[3,3], stride=1)
+        conv2d_4 = max_pool2d(self.pool_2, kernel_size=[3,3], stride=1, padding='SAME')
         conv2d_4 = conv2d(conv2d_4, num_outputs=32,
                     kernel_size=[1,1], stride=1, padding="SAME",
                     activation_fn=tf.nn.relu)
-        self.inception_3a = tf.concat(3, [conv2d_1, conv2d_2, conv2d_3, conv2d_4])
+        self.inception_3a = tf.concat([conv2d_1, conv2d_2, conv2d_3, conv2d_4], 3)
 
         # inception (3b)
         conv2d_1 = conv2d(self.inception_3a, num_outputs=128,
@@ -73,12 +73,12 @@ class GoogLeNet(ImgClfModel):
                     kernel_size=[5,5], stride=1, padding="SAME",
                     activation_fn=tf.nn.relu)
 
-        conv2d_4 = max_pool2d(self.inception_3a, kernel_size=[3,3], stride=1)
+        conv2d_4 = max_pool2d(self.inception_3a, kernel_size=[3,3], stride=1, padding='SAME')
         conv2d_4 = conv2d(conv2d_4, num_outputs=64,
                     kernel_size=[1,1], stride=1, padding="SAME",
                     activation_fn=tf.nn.relu)
         self.inception_3b = tf.concat(3, [conv2d_1, conv2d_2, conv2d_3, conv2d_4])
-        self.inception_3b_pool_1 = max_pool2d(self.inception_3b, kernel_size=[3,3], stride=2)
+        self.inception_3b_pool_1 = max_pool2d(self.inception_3b, kernel_size=[3,3], stride=2, padding='SAME')
 
         # inception (4a)
         conv2d_1 = conv2d(self.inception_3b_pool_1, num_outputs=192,
@@ -99,7 +99,7 @@ class GoogLeNet(ImgClfModel):
                     kernel_size=[5,5], stride=1, padding="SAME",
                     activation_fn=tf.nn.relu)
 
-        conv2d_4 = max_pool2d(self.inception_3b_pool_1, kernel_size=[3,3], stride=1)
+        conv2d_4 = max_pool2d(self.inception_3b_pool_1, kernel_size=[3,3], stride=1, padding='SAME')
         conv2d_4 = conv2d(conv2d_4, num_outputs=64,
                     kernel_size=[1,1], stride=1, padding="SAME",
                     activation_fn=tf.nn.relu)
@@ -124,7 +124,7 @@ class GoogLeNet(ImgClfModel):
                     kernel_size=[5,5], stride=1, padding="SAME",
                     activation_fn=tf.nn.relu)
 
-        conv2d_4 = max_pool2d(self.inception_4a, kernel_size=[3,3], stride=1)
+        conv2d_4 = max_pool2d(self.inception_4a, kernel_size=[3,3], stride=1, padding='SAME')
         conv2d_4 = conv2d(conv2d_4, num_outputs=64,
                     kernel_size=[1,1], stride=1, padding="SAME",
                     activation_fn=tf.nn.relu)
@@ -149,7 +149,7 @@ class GoogLeNet(ImgClfModel):
                     kernel_size=[5,5], stride=1, padding="SAME",
                     activation_fn=tf.nn.relu)
 
-        conv2d_4 = max_pool2d(self.inception_4b, kernel_size=[3,3], stride=1)
+        conv2d_4 = max_pool2d(self.inception_4b, kernel_size=[3,3], stride=1, padding='SAME')
         conv2d_4 = conv2d(conv2d_4, num_outputs=64,
                     kernel_size=[1,1], stride=1, padding="SAME",
                     activation_fn=tf.nn.relu)
@@ -174,7 +174,7 @@ class GoogLeNet(ImgClfModel):
                     kernel_size=[5,5], stride=1, padding="SAME",
                     activation_fn=tf.nn.relu)
 
-        conv2d_4 = max_pool2d(self.inception_4c, kernel_size=[3,3], stride=1)
+        conv2d_4 = max_pool2d(self.inception_4c, kernel_size=[3,3], stride=1, padding='SAME')
         conv2d_4 = conv2d(conv2d_4, num_outputs=64,
                     kernel_size=[1,1], stride=1, padding="SAME",
                     activation_fn=tf.nn.relu)
@@ -199,12 +199,12 @@ class GoogLeNet(ImgClfModel):
                     kernel_size=[5,5], stride=1, padding="SAME",
                     activation_fn=tf.nn.relu)
 
-        conv2d_4 = max_pool2d(self.inception_4d, kernel_size=[3,3], stride=1)
+        conv2d_4 = max_pool2d(self.inception_4d, kernel_size=[3,3], stride=1, padding='SAME')
         conv2d_4 = conv2d(conv2d_4, num_outputs=128,
                     kernel_size=[1,1], stride=1, padding="SAME",
                     activation_fn=tf.nn.relu)
         self.inception_4d = tf.concat(3, [conv2d_1, conv2d_2, conv2d_3, conv2d_4])
-        self.inception_4d_pool_1 = max_pool2d(self.inception_4d, kernel_size=[3,3], stride=2)
+        self.inception_4d_pool_1 = max_pool2d(self.inception_4d, kernel_size=[3,3], stride=2, padding='SAME')
 
         # inception (5a)
         conv2d_1 = conv2d(self.inception_4d_pool_1, num_outputs=256,
@@ -225,7 +225,7 @@ class GoogLeNet(ImgClfModel):
                     kernel_size=[5,5], stride=1, padding="SAME",
                     activation_fn=tf.nn.relu)
 
-        conv2d_4 = max_pool2d(self.inception_4d_pool_1, kernel_size=[3,3], stride=1)
+        conv2d_4 = max_pool2d(self.inception_4d_pool_1, kernel_size=[3,3], stride=1, padding='SAME')
         conv2d_4 = conv2d(conv2d_4, num_outputs=128,
                     kernel_size=[1,1], stride=1, padding="SAME",
                     activation_fn=tf.nn.relu)
@@ -250,14 +250,14 @@ class GoogLeNet(ImgClfModel):
                     kernel_size=[5,5], stride=1, padding="SAME",
                     activation_fn=tf.nn.relu)
 
-        conv2d_4 = max_pool2d(self.inception_5a, kernel_size=[3,3], stride=1)
+        conv2d_4 = max_pool2d(self.inception_5a, kernel_size=[3,3], stride=1, padding='SAME')
         conv2d_4 = conv2d(conv2d_4, num_outputs=128,
                     kernel_size=[1,1], stride=1, padding="SAME",
                     activation_fn=tf.nn.relu)
         self.inception_5b = tf.concat(3, [conv2d_1, conv2d_2, conv2d_3, conv2d_4])
 
         # Aux #1 output
-        aux_avg_pool_1 = avg_pool2d(self.inception_4a, kernel_size=[5,5], stride=3)
+        aux_avg_pool_1 = avg_pool2d(self.inception_4a, kernel_size=[5,5], stride=3, padding='SAME')
         aux_conv2d_1 = conv2d(aux_1_avg_pool_1, num_outputs=128,
                                 kernel_size=[1,1], stride=1, padding="SAME",
                                 activation_fn=tf.nn.relu)
@@ -267,7 +267,7 @@ class GoogLeNet(ImgClfModel):
         self.aux_1_out = fully_connected(aux_droupout_1, num_outputs=1024, activation_fn=tf.nn.relu)
 
         # Aux #2 output
-        aux_avg_pool_1 = avg_pool2d(self.inception_4d, kernel_size=[5,5], stride=3)
+        aux_avg_pool_1 = avg_pool2d(self.inception_4d, kernel_size=[5,5], stride=3, padding='SAME')
         aux_conv2d_1 = conv2d(aux_1_avg_pool_1, num_outputs=128,
                                 kernel_size=[1,1], stride=1, padding="SAME",
                                 activation_fn=tf.nn.relu)
@@ -277,7 +277,7 @@ class GoogLeNet(ImgClfModel):
         self.aux_2_out = fully_connected(aux_droupout_1, num_outputs=1024, activation_fn=tf.nn.relu)
 
         # Final output
-        self.final_avg_pool_1 = avg_pool2d(self.inception_5b, kernel_size=[7,7], stride=1)
+        self.final_avg_pool_1 = avg_pool2d(self.inception_5b, kernel_size=[7,7], stride=1, padding='SAME')
         self.final_dropout = tf.nn.dropout(self.avg_pool_1, 0.4)
         self.final_flat = flatten(self.dropout)
         self.final_out = fully_connected(self.flat, num_outputs=1000, activation_fn=None)
