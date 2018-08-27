@@ -3,3 +3,7 @@
 *.floydexpt
 *.floydignore
 *.yml
+*.p
+cifar-10-batches-py/*
+*.ckpt-*.*
+checkpoint
