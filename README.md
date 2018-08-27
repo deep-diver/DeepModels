@@ -9,12 +9,20 @@ There are 3 main parts, and each part corresponds to a class.
 
 ## Pre-defined Classes
 #### Datasets
+- **MNIST** (coming soon)
+  - [Information page link](http://yann.lecun.com/exdb/mnist)
+  - 10 classes of handwritten digits images in size of 28x28
+  - 60,000 training images, 10,000 testing images
 - **CIFAR-10**
   - [Information page link](https://www.cs.toronto.edu/~kriz/cifar.html)
-  - 10 classes of image in size of 32x32
+  - 10 classes of colored images in size of 32x32
+  - 50,000 training images, 10,000 testing images
+  - 6,000 images per class
 - **CIFAR-100**
   - [Information page link](https://www.cs.toronto.edu/~kriz/cifar.html)
-  - 100 classes of image in size of 32x32  
+  - 100 classes of colored images in size of 32x32
+  - 600 images per class
+  - 500 training images, 100 testing images per class
 
 #### Models
 - **[AlexNet](https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf)**
