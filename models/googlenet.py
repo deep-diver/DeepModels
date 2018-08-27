@@ -339,7 +339,7 @@ class GoogLeNet(ImgClfModel):
         self.final_flat = flatten(self.final_dropout)
         self.final_out = fully_connected(self.final_flat, num_outputs=self.num_classes, activation_fn=None)
 
-        return self.aux_1_out, self.aux_2_out, self.final_out
+        return [self.aux_1_out, self.aux_2_out, self.final_out]
 
     def load_pretrained_model(self, save_model_from, options):
         raise NotImplementedError

@@ -216,7 +216,7 @@ class VGG(ImgClfModel):
             self.out = out
             tf.identity(out, 'out')
 
-        return out
+        return [out]
 
     def load_pretrained_model(self, save_model_from, options):
         model_type = options['model_type']

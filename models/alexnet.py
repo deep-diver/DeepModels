@@ -88,7 +88,7 @@ class AlexNet(ImgClfModel):
             self.out = fully_connected(self.dr2, num_outputs=self.num_classes, activation_fn=None)
             tf.identity(self.out, 'out')
 
-        return self.out
+        return [self.out]
 
     def load_pretrained_model(self, save_model_from, options=None):
         with tf.Session() as sess:
