@@ -132,7 +132,7 @@ def test_googlenet_cifar10_train(save_model_to):
     input, output = googLeNet.set_dataset(cifar10_dataset)
     _, _, out_layer = googLeNet.create_model(input)
     print('done...')
-    
+
     print('# Defining Loss/Cost function and Optimizer...', end='')
     cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=out_layer, labels=output))
     optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
@@ -159,13 +159,22 @@ def main():
     # test_alexnet_cifar10_train('./alexnet_cifar10.ckpt')
 
     # Testment #1-1
-    test_googlenet_cifar10_train('./googlenet_cifar10.ckpt')
+    # test_googlenet_cifar10_train('./googlenet_cifar10.ckpt')
 
     # Testment #2
     # test_alexnet_cifar10_train_resume('./alexnet_cifar10.ckpt-3', './alexnet_cifar10.ckpt')
 
     # Testment #3
     # test_alexnet_transfer_from_cifar10_to_cifar100('/ckpt/alexnet_cifar10.ckpt-1', './alexnet_cifar100.ckpt')
+
+    # alexNet = AlexNet()
+    vgg = VGG()
+    cifar10_dataset = Cifar10()
+    trainer = ClfTrainer(vgg, cifar10_dataset)
+
+    # def train(self, epochs, batch_size, learning_rate, save_model_to, aux_cost_weight=0.3):
+    # trainer.run_training(epochs, batch_size, learning_rate, './alexnet_cifar10.ckpt')
+    trainer.run_training(epochs, batch_size, learning_rate, './vgg16_cifar10.ckpt', options={'model_type': 'D'})
 
 if __name__ == "__main__":
     main()
