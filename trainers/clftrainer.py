@@ -70,9 +70,9 @@ class ClfTrainer:
     def run_training(self,
                      epochs, batch_size, learning_rate,
                      save_model_to,
-                     aux_cost_weight=0.3):
+                     options=None):
         input, output = self.clf_model.set_dataset(self.clf_dataset)
-        out_layers = self.clf_model.create_model(input)
+        out_layers = self.clf_model.create_model(input, options)
 
         # aux_softmax is not implemented yet
         final_out_layer = out_layers[len(out_layers)-1]
