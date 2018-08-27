@@ -25,7 +25,7 @@ There are 3 main parts, and each part corresponds to a class.
   - **C:** 13 layers with additional convolutional layer whose kernel size is 1x1
   - **D:** 16 layers (known as VGG16)
   - **E:** 19 layers (known as VGG19)
-- **GoogLeNet** (coming soon)
+- **Inception V1 (GoogLeNet)** (coming soon)
 
 #### Trainers
 - ClfTrainer: Trainer for image classification like ILSVRC
@@ -33,7 +33,7 @@ There are 3 main parts, and each part corresponds to a class.
 ## Pre-trained accuracy (coming soon)
 - AlexNet
 - VGG
-- GoogLeNet
+- Inception V1 (GoogLeNet)
 
 ## Example Usage Code Blocks
 #### Define hyper-parameters
