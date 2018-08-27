@@ -17,15 +17,15 @@ There are 3 main parts, and each part corresponds to a class.
   - 100 classes of image in size of 32x32  
 
 #### Models
-- **AlexNet**
-- **VGG** (model type = [A | A-LRN | B | C | D | E])
+- **[AlexNet](https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf)**
+- **[VGG](https://arxiv.org/pdf/1409.1556.pdf)** (model type = [A | A-LRN | B | C | D | E])
   - **A:** 11 layers
   - **A-LRN:** 11 layers with LRN (Local Response Normalization)
   - **B:** 13 layers
   - **C:** 13 layers with additional convolutional layer whose kernel size is 1x1
   - **D:** 16 layers (known as VGG16)
   - **E:** 19 layers (known as VGG19)
-- **Inception V1 (GoogLeNet)** (coming soon)
+- **[Inception V1 (GoogLeNet)](https://arxiv.org/pdf/1409.4842.pdf)**
 
 #### Trainers
 - ClfTrainer: Trainer for image classification like ILSVRC
@@ -126,3 +126,6 @@ trainer.transfer_learning(vgg.input, output,
 2. Define/Instantiate a model
 3. Define/Instantiate a trainer with the dataset and the model
 4. Begin training
+
+## References
+- [CNN Receptive Field Calculator](http://fomoro.com/tools/receptive-fields/index.html)
