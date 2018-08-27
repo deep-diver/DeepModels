@@ -124,15 +124,15 @@ def test_googlenet_cifar10_train(save_model_to):
     cifar10_dataset = Cifar10()
     print('done...')
 
-    print('# Instantiating AlexNet...', end='')
+    print('# Instantiating GoogLeNet...', end='')
     googLeNet = GoogLeNet()
     print('done...')
 
-    print('# Building AlexNet...')
+    print('# Building GoogLeNet...')
     input, output = googLeNet.set_dataset(cifar10_dataset)
     _, _, out_layer = googLeNet.create_model(input)
     print('done...')
-
+    
     print('# Defining Loss/Cost function and Optimizer...', end='')
     cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=out_layer, labels=output))
     optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
