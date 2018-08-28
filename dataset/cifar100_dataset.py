@@ -34,7 +34,7 @@ class Cifar100(Dataset):
                 tar.extractall()
                 tar.close()
         else:
-            print('cifar10 dataset already exists')
+            print('cifar100 dataset already exists')
 
     def load_batch(self, batch_id=1):
         with open(self.path + '/train', mode='rb') as file:
