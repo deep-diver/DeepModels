@@ -1,4 +1,8 @@
 import tensorflow as tf
+from tensorflow.contrib.layers import conv2d
+from tensorflow.contrib.layers import max_pool2d
+from tensorflow.contrib.layers import flatten
+from tensorflow.contrib.layers import fully_connected
 
 class ClfTrainer:
     def __init__(self, clf_model, clf_dataset):
@@ -69,7 +73,7 @@ class ClfTrainer:
     # default to use AdamOptimizer w/ softmax_cross_entropy_with_logits_v2
     def run_training(self,
                      epochs, batch_size, learning_rate,
-                     save_model_to,
+                     save_model_to, save_every_epoch=1,
                      options=None):
         input, output = self.clf_model.set_dataset(self.clf_dataset)
         out_layers = self.clf_model.create_model(input, options)
@@ -85,7 +89,7 @@ class ClfTrainer:
         self.__train__(input, output,
                        cost, optimizer, accuracy,
                        epochs, batch_size,
-                       save_model_to)
+                       save_model_to, save_every_epoch)
 
     def train_from_ckpt(self, epochs, batch_size, save_model_from, save_model_to, save_every_epoch=1):
         loaded_graph = tf.Graph()
@@ -116,7 +120,28 @@ class ClfTrainer:
                 if epoch % save_every_epoch == 0:
                     saver.save(sess, save_model_to, global_step=epoch+1)
 
-    def transfer_learning(self, input, output,
+    def run_transfer_learning(self,
+                              epochs, batch_size, learning_rate,
+                              save_model_from, save_model_to, options=None, save_every_epoch=1):
+        self.clf_model.load_pretrained_model(save_model_from, options)
+        before_final_layer = self.clf_model.before_out
+        final_out_layer = fully_connected(before_final_layer, num_outputs=self.clf_dataset.num_classes, activation_fn=None)
+
+        with tf.name_scope("new_train"):
+            output = tf.placeholder(tf.int32, [None, self.clf_dataset.num_classes], name='output_new')
+
+            cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=final_out_layer, labels=output), name='cost_new')
+            optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate, name='adam_new').minimize(cost)
+
+            correct_pred = tf.equal(tf.argmax(final_out_layer, 1), tf.argmax(output, 1))
+            accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32), name='accuracy_new')
+
+        self.__transfer_learning__(self.clf_model.input, output,
+                                  cost, optimizer, accuracy,
+                                  epochs, batch_size,
+                                  save_model_from, save_model_to, save_every_epoch)
+
+    def __transfer_learning__(self, input, output,
                                 cost_func, optimizer, accuracy,
                                 epochs, batch_size,
                                 save_model_from, save_model_to, save_every_epoch=1):
