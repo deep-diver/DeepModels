@@ -16,7 +16,7 @@ from models.googlenet import GoogLeNet
 from trainers.clftrainer import ClfTrainer
 
 learning_rate = 0.0001
-epochs = 2
+epochs = 1
 batch_size = 64
 
 def test_alexnet_transfer_from_cifar10_to_cifar100(save_model_from, save_model_to):
@@ -170,11 +170,19 @@ def main():
     # alexNet = AlexNet()
     vgg = VGG()
     cifar10_dataset = Cifar10()
-    trainer = ClfTrainer(vgg, cifar10_dataset)
+    # trainer = ClfTrainer(vgg, cifar10_dataset)
 
     # def train(self, epochs, batch_size, learning_rate, save_model_to, aux_cost_weight=0.3):
     # trainer.run_training(epochs, batch_size, learning_rate, './alexnet_cifar10.ckpt')
-    trainer.run_training(epochs, batch_size, learning_rate, './vgg16_cifar10.ckpt', options={'model_type': 'D'})
+    # trainer.run_training(epochs, batch_size, learning_rate, './vgg16_cifar10.ckpt', options={'model_type': 'D'})
+    # trainer.train_from_ckpt(epochs, batch_size, './vgg16_cifar10.ckpt-1', './vgg16_cifar10.ckpt-new')
+
+    cifar100_dataset = Cifar100()
+    trainer = ClfTrainer(vgg, cifar100_dataset)
+    # trainer.run_transfer_learning(epochs, batch_size, learning_rate,
+    #                               './vgg16_cifar10.ckpt-new-1', './vgg16_cifar100.ckpt',
+    #                               options={'model_type': 'D'})
+    trainer.train_from_ckpt(epochs, batch_size, './vgg16_cifar100.ckpt-1', './vgg16_cifar100.ckpt-new')
 
 if __name__ == "__main__":
     main()

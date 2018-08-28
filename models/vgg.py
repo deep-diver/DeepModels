@@ -308,3 +308,5 @@ class VGG(ImgClfModel):
             # 3rd FC 1000
             self.before_out = tf.get_default_graph().get_tensor_by_name('final/before_out:0')
             self.out = tf.get_default_graph().get_tensor_by_name('final/out:0')
+
+            return loader

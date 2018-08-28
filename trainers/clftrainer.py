@@ -45,10 +45,11 @@ class ClfTrainer:
 
         saver = tf.train.Saver()
 
+        graph = tf.Graph()
         loss = tf.identity(cost_func, 'loss')
         accuracy = tf.identity(accuracy, 'accuracy')
 
-        with tf.Session() as sess:
+        with tf.Session(graph=graph) as sess:
             print('global_variables_initializer...')
             sess.run(tf.global_variables_initializer())
 
@@ -123,35 +124,41 @@ class ClfTrainer:
     def run_transfer_learning(self,
                               epochs, batch_size, learning_rate,
                               save_model_from, save_model_to, options=None, save_every_epoch=1):
-        self.clf_model.load_pretrained_model(save_model_from, options)
+        loader = self.clf_model.load_pretrained_model(save_model_from, options)
         before_final_layer = self.clf_model.before_out
         final_out_layer = fully_connected(before_final_layer, num_outputs=self.clf_dataset.num_classes, activation_fn=None)
 
-        with tf.name_scope("new_train"):
-            output = tf.placeholder(tf.int32, [None, self.clf_dataset.num_classes], name='output_new')
+        output = tf.placeholder(tf.int32, [None, self.clf_dataset.num_classes], name='output')
 
-            cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=final_out_layer, labels=output), name='cost_new')
-            optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate, name='adam_new').minimize(cost)
+        cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=final_out_layer, labels=output), name='loss')
+        optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
 
-            correct_pred = tf.equal(tf.argmax(final_out_layer, 1), tf.argmax(output, 1))
-            accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32), name='accuracy_new')
+        correct_pred = tf.equal(tf.argmax(final_out_layer, 1), tf.argmax(output, 1))
+        accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32), name='accuracy')
 
-        self.__transfer_learning__(self.clf_model.input, output,
+        self.__transfer_learning__(loader, self.clf_model.input, output,
                                   cost, optimizer, accuracy,
                                   epochs, batch_size,
                                   save_model_from, save_model_to, save_every_epoch)
 
-    def __transfer_learning__(self, input, output,
+    def __transfer_learning__(self, loader, input, output,
                                 cost_func, optimizer, accuracy,
                                 epochs, batch_size,
                                 save_model_from, save_model_to, save_every_epoch=1):
-        saver = tf.train.Saver()
+            # cost_func = loaded_graph.get_tensor_by_name('loss:0')
+            # optimizer = tf.get_collection('optimizer')[0]
+            # accuracy = loaded_graph.get_tensor_by_name('accuracy:0')
+
+        not_restore = ['output:0', 'loss:0', 'optimizer', 'accuracy:0']
+        restore_var = [v for v in tf.global_variables() if v.name not in not_restore]
+
+        saver = tf.train.Saver(restore_var)
 
         with tf.Session() as sess:
             sess.run(tf.global_variables_initializer())
-
-            loader = tf.train.import_meta_graph(save_model_from + '.meta')
             loader.restore(sess, save_model_from)
+
+            tf.add_to_collection('optimizer', optimizer)
 
             print('starting training ... ')
             for epoch in range(epochs):
