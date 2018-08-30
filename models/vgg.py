@@ -226,87 +226,90 @@ class VGG(ImgClfModel):
             print('model type is not set. please run create_model method first')
             raise TypeError
 
-        with tf.Session() as sess:
-            loader = tf.train.import_meta_graph(save_model_from + '.meta')
+        # print(tf.contrib.graph_editor.get_tensors(tf.get_default_graph()))
+        loader = tf.train.import_meta_graph(save_model_from + '.meta')
+        #
+        # print(tf.contrib.graph_editor.get_tensors(tf.get_default_graph())[0])
+        # tf.contrib.graph_editor.get_tensors(tf.get_default_graph())[0] = tf.placeholder(tf.float32, [None, 10, 10, 3], name='input_2')
+        # print(tf.contrib.graph_editor.get_tensors(tf.get_default_graph())[0])
+        self.input = tf.get_default_graph().get_tensor_by_name('input:0')
+        self.output = tf.get_default_graph().get_tensor_by_name('output:0')
 
-            self.input = tf.get_default_graph().get_tensor_by_name('input:0')
-            self.output = tf.get_default_graph().get_tensor_by_name('output:0')
+        # GROUP1
+        self.group1_conv2d_1 = tf.get_default_graph().get_tensor_by_name('group1/conv2d_1:0')
 
-            # GROUP1
-            self.group1_conv2d_1 = tf.get_default_graph().get_tensor_by_name('group1/conv2d_1:0')
+        if self.model_type == 'A-LRN':
+            self.group1_lrn_1 = tf.get_default_graph().get_tensor_by_name('group1/lrn_1:0')
 
-            if self.model_type == 'A-LRN':
-                self.group1_lrn_1 = tf.get_default_graph().get_tensor_by_name('group1/lrn_1:0')
+        if self.model_type != 'A' and self.model_type == 'A-LRN':
+            self.group1_conv2d_2 = tf.get_default_graph().get_tensor_by_name('group1/conv2d_2:0')
 
-            if self.model_type != 'A' and self.model_type == 'A-LRN':
-                self.group1_conv2d_2 = tf.get_default_graph().get_tensor_by_name('group1/conv2d_2:0')
+        self.group1_max_pool_1 = tf.get_default_graph().get_tensor_by_name('group1/max_pool_1:0')
 
-            self.group1_max_pool_1 = tf.get_default_graph().get_tensor_by_name('group1/max_pool_1:0')
+        # LAYER GROUP #2
+        self.group2_conv2d_1 = tf.get_default_graph().get_tensor_by_name('group2/conv2d_1:0')
 
-            # LAYER GROUP #2
-            self.group2_conv2d_1 = tf.get_default_graph().get_tensor_by_name('group2/conv2d_1:0')
+        if self.model_type != 'A' and self.model_type == 'A-LRN':
+            self.group2_conv2d_2 = tf.get_default_graph().get_tensor_by_name('group2/conv2d_2:0')
 
-            if self.model_type != 'A' and self.model_type == 'A-LRN':
-                self.group2_conv2d_2 = tf.get_default_graph().get_tensor_by_name('group2/conv2d_2:0')
+        self.group2_max_pool_1 = tf.get_default_graph().get_tensor_by_name('group2/max_pool_1:0')
 
-            self.group2_max_pool_1 = tf.get_default_graph().get_tensor_by_name('group2/max_pool_1:0')
+        # LAYER GROUP #3
+        self.group3_conv2d_1 = tf.get_default_graph().get_tensor_by_name('group3/conv2d_1:0')
+        self.group3_conv2d_2 = tf.get_default_graph().get_tensor_by_name('group3/conv2d_2:0')
 
-            # LAYER GROUP #3
-            self.group3_conv2d_1 = tf.get_default_graph().get_tensor_by_name('group3/conv2d_1:0')
-            self.group3_conv2d_2 = tf.get_default_graph().get_tensor_by_name('group3/conv2d_2:0')
+        if self.model_type == 'C':
+            self.group3_conv1d_1 = tf.get_default_graph().get_tensor_by_name('group3/conv1d_1:0')
 
-            if self.model_type == 'C':
-                self.group3_conv1d_1 = tf.get_default_graph().get_tensor_by_name('group3/conv1d_1:0')
+        if self.model_type == 'D' or self.model_type == 'E':
+            self.group3_conv2d_3 = tf.get_default_graph().get_tensor_by_name('group3/conv2d_3:0')
 
-            if self.model_type == 'D' or self.model_type == 'E':
-                self.group3_conv2d_3 = tf.get_default_graph().get_tensor_by_name('group3/conv2d_3:0')
+        if self.model_type == 'E':
+            self.group3_conv2d_4 = tf.get_default_graph().get_tensor_by_name('group3/conv2d_4:0')
 
-            if self.model_type == 'E':
-                self.group3_conv2d_4 = tf.get_default_graph().get_tensor_by_name('group3/conv2d_4:0')
+        self.group3_max_pool_1 = tf.get_default_graph().get_tensor_by_name('group3/max_pool_1:0')
 
-            self.group3_max_pool_1 = tf.get_default_graph().get_tensor_by_name('group3/max_pool_1:0')
+        # LAYER GROUP #4
+        self.group4_conv2d_1 = tf.get_default_graph().get_tensor_by_name('group4/conv2d_1:0')
+        self.group4_conv2d_2 = tf.get_default_graph().get_tensor_by_name('group4/conv2d_2:0')
 
-            # LAYER GROUP #4
-            self.group4_conv2d_1 = tf.get_default_graph().get_tensor_by_name('group4/conv2d_1:0')
-            self.group4_conv2d_2 = tf.get_default_graph().get_tensor_by_name('group4/conv2d_2:0')
+        if self.model_type == 'C':
+            self.group4_conv1d_1 = tf.get_default_graph().get_tensor_by_name('group4/conv1d_1:0')
 
-            if self.model_type == 'C':
-                self.group4_conv1d_1 = tf.get_default_graph().get_tensor_by_name('group4/conv1d_1:0')
+        if self.model_type == 'D' or self.model_type == 'E':
+            self.group4_conv2d_3 = tf.get_default_graph().get_tensor_by_name('group4/conv2d_3:0')
 
-            if self.model_type == 'D' or self.model_type == 'E':
-                self.group4_conv2d_3 = tf.get_default_graph().get_tensor_by_name('group4/conv2d_3:0')
+        if self.model_type == 'E':
+            self.group4_conv2d_4 = tf.get_default_graph().get_tensor_by_name('group4/conv2d_4:0')
 
-            if self.model_type == 'E':
-                self.group4_conv2d_4 = tf.get_default_graph().get_tensor_by_name('group4/conv2d_4:0')
+        self.group4_max_pool_1 = tf.get_default_graph().get_tensor_by_name('group4/max_pool_1:0')
 
-            self.group4_max_pool_1 = tf.get_default_graph().get_tensor_by_name('group4/max_pool_1:0')
+        # LAYER GROUP #5
+        self.group5_conv2d_1 = tf.get_default_graph().get_tensor_by_name('group5/conv2d_1:0')
+        self.group5_conv2d_2 = tf.get_default_graph().get_tensor_by_name('group5/conv2d_2:0')
 
-            # LAYER GROUP #5
-            self.group5_conv2d_1 = tf.get_default_graph().get_tensor_by_name('group5/conv2d_1:0')
-            self.group5_conv2d_2 = tf.get_default_graph().get_tensor_by_name('group5/conv2d_2:0')
+        if self.model_type == 'C':
+            self.group5_conv1d_1 = tf.get_default_graph().get_tensor_by_name('group5/conv1d_1:0')
 
-            if self.model_type == 'C':
-                self.group5_conv1d_1 = tf.get_default_graph().get_tensor_by_name('group5/conv1d_1:0')
+        if self.model_type == 'D' or self.model_type == 'E':
+            self.group5_conv2d_3 = tf.get_default_graph().get_tensor_by_name('group5/conv2d_3:0')
 
-            if self.model_type == 'D' or self.model_type == 'E':
-                self.group5_conv2d_3 = tf.get_default_graph().get_tensor_by_name('group5/conv2d_3:0')
+        if self.model_type == 'E':
+            self.group5_conv2d_4 = tf.get_default_graph().get_tensor_by_name('group5/conv2d_4:0')
 
-            if self.model_type == 'E':
-                self.group5_conv2d_4 = tf.get_default_graph().get_tensor_by_name('group5/conv2d_4:0')
+        self.group5_max_pool_1 = tf.get_default_graph().get_tensor_by_name('group5/max_pool_1:0')
 
-            self.group5_max_pool_1 = tf.get_default_graph().get_tensor_by_name('group5/max_pool_1:0')
+        # 1st FC 4096
+        self.flat = tf.get_default_graph().get_tensor_by_name('fcl/flat:0')
+        self.fcl_1 = tf.get_default_graph().get_tensor_by_name('fcl/fcl_1:0')
+        self.dropout_1 = tf.get_default_graph().get_tensor_by_name('fcl/dropout_1:0')
 
-            # 1st FC 4096
-            self.flat = tf.get_default_graph().get_tensor_by_name('fcl/flat:0')
-            self.fcl_1 = tf.get_default_graph().get_tensor_by_name('fcl/fcl_1:0')
-            self.dropout_1 = tf.get_default_graph().get_tensor_by_name('fcl/dropout_1:0')
+        # 2nd FC 4096
+        self.fcl_2 = tf.get_default_graph().get_tensor_by_name('fcl/fcl_2:0')
+        self.dropout_2 = tf.get_default_graph().get_tensor_by_name('final/before_out:0')
 
-            # 2nd FC 4096
-            self.fcl_2 = tf.get_default_graph().get_tensor_by_name('fcl/fcl_2:0')
-            self.dropout_2 = tf.get_default_graph().get_tensor_by_name('final/before_out:0')
+        # 3rd FC 1000
+        self.before_out = tf.get_default_graph().get_tensor_by_name('final/before_out:0')
+        self.out = tf.get_default_graph().get_tensor_by_name('final/out:0')
 
-            # 3rd FC 1000
-            self.before_out = tf.get_default_graph().get_tensor_by_name('final/before_out:0')
-            self.out = tf.get_default_graph().get_tensor_by_name('final/out:0')
-
-            return loader
+        return loader
