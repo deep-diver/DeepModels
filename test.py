@@ -19,6 +19,8 @@ learning_rate = 0.0001
 epochs = 1
 batch_size = 64
 
+import warnings
+
 def test_alexnet_transfer_from_cifar10_to_cifar100(save_model_from, save_model_to):
     print('Testment #2')
     print('- AlexNet transfer training on CIFAR-100 dataset based on CIFAR-10 parameter')
@@ -169,7 +171,7 @@ def main():
 
     # alexNet = AlexNet()
     vgg = VGG()
-    cifar10_dataset = Cifar10()
+    # cifar10_dataset = Cifar10()
     # trainer = ClfTrainer(vgg, cifar10_dataset)
 
     # def train(self, epochs, batch_size, learning_rate, save_model_to, aux_cost_weight=0.3):

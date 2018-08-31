@@ -97,10 +97,17 @@ class ClfTrainer:
             tf.train.import_meta_graph(save_model_from + '.meta')
 
             sess.run(tf.global_variables_initializer())
-            saver = tf.train.Saver(tf.model_variables())
-            saver.restore(sess, save_model_from)
 
-            print(tf.contrib.graph_editor.get_tensors(tf.get_default_graph()))
+            vars = tf.trainable_variables()
+            vars_to_restore = []
+            for var in vars:
+                if 'fully_connected_2' not in var.name:
+                    vars_to_restore.append(var)
+                else:
+                    print(var)
+
+            saver = tf.train.Saver(tf.trainable_variables())
+            saver.restore(sess, save_model_from)
 
             # input = tf.get_default_graph().get_tensor_by_name('input:0')
             # output = tf.get_default_graph().get_tensor_by_name('output:0')
@@ -132,7 +139,14 @@ class ClfTrainer:
                               save_model_from, save_model_to, options=None, save_every_epoch=1):
         with tf.Session() as sess:
             tf.train.import_meta_graph(save_model_from + '.meta')
-            saver = tf.train.Saver(tf.trainable_variables())
+            #final/out:0
+            vars = tf.trainable_variables()
+            vars_to_restore = []
+            for var in vars:
+                if 'fully_connected_2' not in var.name:
+                    vars_to_restore.append(var)
+
+            saver = tf.train.Saver(vars_to_restore)
 
             input = tf.get_default_graph().get_tensor_by_name('input:0')
             before_final_layer = tf.get_default_graph().get_tensor_by_name('final/before_out:0')
