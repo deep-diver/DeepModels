@@ -84,7 +84,7 @@ class AlexNet(ImgClfModel):
             tf.identity(self.dr2 , 'dr_2' )
 
         #output
-        with tf.name_scope('final') as final_scope:
+        with tf.variable_scope('final') as final_scope:
             self.out = fully_connected(self.dr2, num_outputs=self.num_classes, activation_fn=None)
             tf.identity(self.out, 'out')
 
