@@ -54,8 +54,6 @@ Dataset and model should be provided to a trainer, and then the trainer knows ho
 learning_rate = 0.0001
 epochs = 1
 batch_size = 64
-save_model_path = './current.ckpt'
-save_model_to = './new.ckpt'
 ```
 
 #### Train from nothing
