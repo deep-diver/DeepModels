@@ -1,17 +1,13 @@
 # DeepModels
 
-Implementation of state-of-the-art deep learning models since 2012
+This repository is mainly for implementing and testing state-of-the-art deep learning models since 2012 when AlexNet has emerged. It will provide pre-trained models on each dataset later.
 
-There are 3 main parts, and each part corresponds to a class.
-- Datasets
-- Models
-- Trainers
+In order to try with state-of-the-art deep learning models, datasets to be fed into and training methods should be also come along. This repository comes with three main parts, **Dataset**, **Model**, and **Trainer** to ease this process.
+
+Dataset and model should be provided to a trainer, and then the trainer knows how to run training, resuming where the last training is left off, and transfer learning.
 
 ## Pre-defined Classes
 #### Datasets
-- **[MNIST](http://yann.lecun.com/exdb/mnist)** (coming soon)
-  - 10 classes of handwritten digits images in size of 28x28
-  - 60,000 training images, 10,000 testing images
 - **[CIFAR-10](https://www.cs.toronto.edu/~kriz/cifar.html)**
   - 10 classes of colored images in size of 32x32
   - 50,000 training images, 10,000 testing images
@@ -21,6 +17,9 @@ There are 3 main parts, and each part corresponds to a class.
   - 600 images per class
   - 500 training images, 100 testing images per class
 - **Things to be added**
+  - **[MNIST](http://yann.lecun.com/exdb/mnist)** (coming soon)
+    - 10 classes of handwritten digits images in size of 28x28
+    - 60,000 training images, 10,000 testing images
   - **[EMNIST](https://www.nist.gov/itl/iad/image-group/emnist-dataset)** (extension of MNIST to handwritten letters)
   - **[ImageNet](http://www.image-net.org/)**
 
@@ -34,6 +33,12 @@ There are 3 main parts, and each part corresponds to a class.
   - **D:** 16 layers (known as VGG16)
   - **E:** 19 layers (known as VGG19)
 - **[Inception V1 (GoogLeNet)](https://arxiv.org/pdf/1409.4842.pdf)**
+- **Things to be added**
+  - **Residual Network**
+  - **Inception V2**
+  - **Inception V3**
+  - **Inception V4**
+  - **MobileNet**
 
 #### Trainers
 - ClfTrainer: Trainer for image classification like ILSVRC
