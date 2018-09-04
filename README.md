@@ -34,11 +34,11 @@ Dataset and model should be provided to a trainer, and then the trainer knows ho
   - **E:** 19 layers (known as VGG19)
 - **[Inception V1 (GoogLeNet)](https://arxiv.org/pdf/1409.4842.pdf)**
 - **Things to be added**
-  - **Residual Network**
-  - **Inception V2**
-  - **Inception V3**
-  - **Inception V4**
-  - **MobileNet**
+  - **[Residual Network](https://arxiv.org/pdf/1512.03385.pdf)**
+  - **[Inception V2](https://arxiv.org/pdf/1512.00567v3.pdf)**
+  - **[Inception V3](https://arxiv.org/pdf/1512.00567v3.pdf)**
+  - **[Inception V4](https://arxiv.org/pdf/1602.07261.pdf)**
+  - **[Inception+Resnet](https://arxiv.org/pdf/1602.07261.pdf)**
 
 #### Trainers
 - ClfTrainer: Trainer for image classification like ILSVRC
