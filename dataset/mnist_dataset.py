@@ -2,6 +2,9 @@ from urllib.request import urlretrieve
 from os.path import isfile, isdir
 
 from tqdm import tqdm
+import gzip
+import shutil
+import struct
 import tarfile
 import pickle
 import numpy as np
@@ -59,9 +62,21 @@ class Mnist(Dataset):
             print('t10k-labels-idx1-ubyte.gz already exists')
 
         # unzip
-        
+        with gzip.open('./train-images-idx3-ubyte.gz', 'rb') as gz_in:
+            with open('./train-images-idx3-ubyte', 'wb') as gz_out:
+                shutil.copyfileobj(gz_in, gz_out)
 
-        raise NotImplementedError
+        with gzip.open('./train-labels-idx1-ubyte.gz', 'rb') as gz_in:
+            with open('./train-labels-idx1-ubyte', 'wb') as gz_out:
+                shutil.copyfileobj(gz_in, gz_out)
+
+        with gzip.open('./t10k-images-idx3-ubyte.gz', 'rb') as gz_in:
+            with open('./t10k-images-idx3-ubyte', 'wb') as gz_out:
+                shutil.copyfileobj(gz_in, gz_out)
+
+        with gzip.open('./t10k-labels-idx1-ubyte.gz', 'rb') as gz_in:
+            with open('./t10k-labels-idx1-ubyte', 'wb') as gz_out:
+                shutil.copyfileobj(gz_in, gz_out)
 
     def preprocess_and_save_data(self):
         raise NotImplementedError
