@@ -106,3 +106,4 @@ trainer.run_transfer_learning(epochs, batch_size, learning_rate,
 
 ## References
 - [CNN Receptive Field Calculator](http://fomoro.com/tools/receptive-fields/index.html)
+- [A Simple Guide to the Versions of the Inception Network](https://towardsdatascience.com/a-simple-guide-to-the-versions-of-the-inception-network-7fc52b863202)
