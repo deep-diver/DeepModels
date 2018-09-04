@@ -19,7 +19,7 @@ class ClfTrainer:
         total_loss = 0
         count = 0
 
-        for batch_features, batch_labels in self.clf_dataset.load_preprocess_training_batch(batch_i, batch_size, scale_to_imagenet):
+        for batch_features, batch_labels in self.clf_dataset.get_training_batches_from_preprocessed(batch_i, batch_size, scale_to_imagenet):
             loss, _ = sess.run([cost_func, optimizer],
                                 feed_dict={input: batch_features,
                                            output: batch_labels})
@@ -28,11 +28,11 @@ class ClfTrainer:
 
         return total_loss/count
 
-    def __run_accuracy_in_valid_set__(self, sess, input, output, accuracy, batch_size):
-        valid_feature, valid_labels = self.clf_dataset.load_valid_set()
+    def __run_accuracy_in_valid_set__(self, sess, input, output, accuracy, batch_size, scale_to_imagenet=False):
+        valid_features, valid_labels = self.clf_dataset.get_valid_set(scale_to_imagenet)
 
         valid_acc = 0
-        for batch_valid_features, batch_valid_labels in self.clf_dataset.batch_features_labels(valid_feature, valid_labels, batch_size):
+        for batch_valid_features, batch_valid_labels in self.clf_dataset.get_batches_from(valid_features, valid_labels, batch_size):
             valid_acc += sess.run(accuracy,
                                 feed_dict={input:batch_valid_features,
                                            output:batch_valid_labels})
@@ -57,11 +57,18 @@ class ClfTrainer:
                 n_batches = self.clf_dataset.num_batch
 
                 for batch_i in range(1, n_batches + 1):
-                    loss = self.__run_train__(sess, input, output, batch_i, batch_size, cost_func, optimizer, True)
+                    loss = self.__run_train__(sess,
+                                              input, output,
+                                              batch_i, batch_size,
+                                              cost_func, optimizer,
+                                              self.clf_model.scale_to_imagenet)
                     print('Epoch {:>2}, {} Batch {}: '.format(epoch + 1, self.clf_dataset.name, batch_i), end='')
                     print('Avg. Loss: {} '.format(loss), end='')
 
-                    valid_acc = self.__run_accuracy_in_valid_set__(sess, input, output, accuracy, batch_size)
+                    valid_acc = self.__run_accuracy_in_valid_set__(sess,
+                                                                   input, output,
+                                                                   accuracy, batch_size,
+                                                                   self.clf_model.scale_to_imagenet)
                     print('Validation Accuracy {:.6f}'.format(valid_acc))
 
                 if epoch % save_every_epoch == 0:
@@ -115,11 +122,18 @@ class ClfTrainer:
                 n_batches = self.clf_dataset.num_batch
 
                 for batch_i in range(1, n_batches + 1):
-                    loss = self.__run_train__(sess, input, output, batch_i, batch_size, cost, optimizer, True)
+                    loss = self.__run_train__(sess,
+                                              input, output,
+                                              batch_i, batch_size,
+                                              cost, optimizer,
+                                              self.clf_model.scale_to_imagenet)
                     print('Epoch {:>2}, {} Batch {}: '.format(epoch + 1, self.clf_dataset.name, batch_i), end='')
                     print('Avg. Loss: {} '.format(loss), end='')
 
-                    valid_acc = self.__run_accuracy_in_valid_set__(sess, input, output, accuracy, batch_size)
+                    valid_acc = self.__run_accuracy_in_valid_set__(sess,
+                                                                   input, output,
+                                                                   accuracy, batch_size,
+                                                                   self.clf_model.scale_to_imagenet)
                     print('Validation Accuracy {:.6f}'.format(valid_acc))
 
                 if epoch % save_every_epoch == 0:
@@ -159,46 +173,21 @@ class ClfTrainer:
                 n_batches = self.clf_dataset.num_batch
 
                 for batch_i in range(1, n_batches + 1):
-                    loss = self.__run_train__(sess, input, output, batch_i, batch_size, cost, optimizer, True)
+                    loss = self.__run_train__(sess,
+                                              input, output,
+                                              batch_i, batch_size,
+                                              cost, optimizer,
+                                              self.clf_model.scale_to_imagenet)
                     print('Epoch {:>2}, {} Batch {}: '.format(epoch + 1, self.clf_dataset.name, batch_i), end='')
                     print('Avg. Loss: {} '.format(loss), end='')
 
-                    valid_acc = self.__run_accuracy_in_valid_set__(sess, input, output, accuracy, batch_size)
+                    valid_acc = self.__run_accuracy_in_valid_set__(sess,
+                                                                   input, output,
+                                                                   accuracy, batch_size,
+                                                                   self.clf_model.scale_to_imagenet)
                     print('Validation Accuracy {:.6f}'.format(valid_acc))
 
                 if epoch % save_every_epoch == 0:
                     print('epoch: {} is saved...'.format(epoch+1))
                     saver2 = tf.train.Saver()
                     saver2.save(sess, save_model_to, global_step=epoch+1, write_meta_graph=False)
-
-        # self.__transfer_learning__(loader, self.clf_model.input, output,
-        #                           cost, optimizer, accuracy,
-        #                           epochs, batch_size,
-        #                           save_model_from, save_model_to, save_every_epoch)
-
-    def __transfer_learning__(self, loader, input, output,
-                                cost_func, optimizer, accuracy,
-                                epochs, batch_size,
-                                save_model_from, save_model_to, save_every_epoch=1):
-        with tf.Session() as sess:
-            sess.run(tf.global_variables_initializer())
-            saver = tf.train.Saver(tf.trainable_variables())
-            saver.restore(sess, save_model_from)
-
-            tf.add_to_collection('optimizer', optimizer)
-
-            print('starting training ... ')
-            for epoch in range(epochs):
-                n_batches = self.clf_dataset.num_batch
-
-                for batch_i in range(1, n_batches + 1):
-                    loss = self.__run_train__(sess, input, output, batch_i, batch_size, cost_func, optimizer, True)
-                    print('Epoch {:>2}, {} Batch {}: '.format(epoch + 1, self.clf_dataset.name, batch_i), end='')
-                    print('Avg. Loss: {} '.format(loss), end='')
-
-                    valid_acc = self.__run_accuracy_in_valid_set__(sess, input, output, accuracy, batch_size)
-                    print('Validation Accuracy {:.6f}'.format(valid_acc))
-
-                if epoch % save_every_epoch == 0:
-                    saver2 = tf.train.Saver()
-                    saver2.save(sess, save_model_to, global_step=epoch+1)

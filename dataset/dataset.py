@@ -24,20 +24,8 @@ class Dataset:
         self.num_batch = num_batch
         self.num_classes = num_classes
 
-        self.download()
-        self.preprocess_and_save_data()
-
-    def download(self):
-        raise NotImplementedError
-
-    def preprocess_and_save_data(self):
-        raise NotImplementedError
-
-    def load_batch(self, batch_id):
-        raise NotImplementedError
-
-    def load_valid_set(self):
-        raise NotImplementedError
+        self.__download__()
+        self.__preprocess_and_save_data__()
 
     def convert_to_imagenet_size(self, images):
         tmp_images = []
@@ -59,8 +47,21 @@ class Dataset:
 
         return encoded
 
-    def batch_features_labels(self, features, labels, batch_size):
+    def __download__(self):
         raise NotImplementedError
 
-    def load_preprocess_training_batch(self, batch_id, batch_size, scale_to_imagenet=False):
+    def __preprocess_and_save_data__(self):
+        raise NotImplementedError
+
+    # load downloaded files (one could be split into multiple files(batches) like CIFAR-10)
+    def __load_batch__(self, batch_id):
+        raise NotImplementedError
+
+    def get_valid_set(self, scale_to_imagenet=False):
+        raise NotImplementedError
+
+    def get_batches_from(self, features, labels, batch_size):
+        raise NotImplementedError
+
+    def get_training_batches_from_preprocessed(self, batch_id, batch_size, scale_to_imagenet=False):
         raise NotImplementedError

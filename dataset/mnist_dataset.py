@@ -22,7 +22,7 @@ class Mnist(Dataset):
         self.width = 28
         self.height = 28
 
-    def download(self):
+    def __download__(self):
         # training dataset
         if not isfile('train-images-idx3-ubyte.gz'):
             with DownloadProgress(unit='B', unit_scale=True, miniters=1, desc='MNIST training dataset (images)') as pbar:
@@ -78,10 +78,10 @@ class Mnist(Dataset):
             with open('./t10k-labels-idx1-ubyte', 'wb') as gz_out:
                 shutil.copyfileobj(gz_in, gz_out)
 
-    def preprocess_and_save_data(self):
+    def __preprocess_and_save_data__(self):
         raise NotImplementedError
 
-    def load_batch(self, batch_id):
+    def __load_batch__(self, batch_id):
         raise NotImplementedError
 
     def load_valid_set(self):

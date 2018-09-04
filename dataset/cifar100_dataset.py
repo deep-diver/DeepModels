@@ -19,7 +19,7 @@ class Cifar100(Dataset):
         self.width = 32
         self.height = 32
 
-    def download(self):
+    def __download__(self):
         if not isfile('cifar-100-python.tar.gz'):
             with DownloadProgress(unit='B', unit_scale=True, miniters=1, desc='CIFAR-100 Dataset') as pbar:
                 urlretrieve(
@@ -36,7 +36,7 @@ class Cifar100(Dataset):
         else:
             print('cifar100 dataset already exists')
 
-    def load_batch(self, batch_id=1):
+    def __load_batch__(self, batch_id=1):
         with open(self.path + '/train', mode='rb') as file:
             # note the encoding type is 'latin1'
             batch = pickle.load(file, encoding='latin1')
@@ -46,12 +46,12 @@ class Cifar100(Dataset):
 
         return features, labels
 
-    def preprocess_and_save_data(self, valid_ratio=0.1):
+    def __preprocess_and_save_data__(self, valid_ratio=0.1):
         valid_features = []
         valid_labels = []
         flag = True
 
-        features, labels = self.load_batch()
+        features, labels = self.__load_batch__()
 
         index_of_validation = int(len(features) * valid_ratio)
 
@@ -74,28 +74,24 @@ class Cifar100(Dataset):
         # Preprocess and Save all testing data
         self.save_preprocessed_data(np.array(test_features), np.array(test_labels), 'cifar100_preprocess_testing.p')
 
-    def batch_features_labels(self, features, labels, batch_size):
+    def get_batches_from(self, features, labels, batch_size):
         for start in range(0, len(features), batch_size):
             end = min(start + batch_size, len(features))
             yield features[start:end], labels[start:end]
 
-    def load_preprocess_training_batch(self, batch_id, batch_size, scale_to_imagenet=False):
+    def get_training_batches_from_preprocessed(self, batch_id, batch_size, scale_to_imagenet=False):
         filename = 'cifar100_preprocess_train.p'
         features, labels = pickle.load(open(filename, mode='rb'))
 
         if scale_to_imagenet:
-            tmpFeatures = []
+            features = self.convert_to_imagenet_size(features)
 
-            for feature in features:
-                tmpFeature = skimage.transform.resize(feature, (224, 224), mode='constant')
-                tmpFeatures.append(tmpFeature)
+        return self.get_batches_from(features, labels, batch_size)
 
-            features = tmpFeatures
-
-        return self.batch_features_labels(features, labels, batch_size)
-
-    def load_valid_set(self):
+    def get_valid_set(self, scale_to_imagenet=False):
         valid_features, valid_labels = pickle.load(open('cifar100_preprocess_validation.p', mode='rb'))
-        tmpValidFeatures = self.convert_to_imagenet_size(valid_features)
 
-        return tmpValidFeatures, valid_labels
+        if scale_to_imagenet:
+            valid_features = self.convert_to_imagenet_size(valid_features)
+
+        return valid_features, valid_labels
