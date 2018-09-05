@@ -37,7 +37,7 @@ class ClfTrainer:
                                 feed_dict={input:batch_valid_features,
                                            output:batch_valid_labels})
 
-        tmp_num = valid_feature.shape[0]/batch_size
+        tmp_num = valid_features.shape[0]/batch_size
         return valid_acc/tmp_num
 
     def __train__(self, input, output,
