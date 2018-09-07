@@ -19,7 +19,7 @@ from dataset.dataset import DownloadProgress
 
 class Mnist(Dataset):
     def __init__(self):
-        Dataset.__init__(self, name='MNIST', path='mnist_dataset', num_classes=10, num_batch=1)
+        Dataset.__init__(self, name='MNIST', path='mnist_dataset', num_classes=10, num_batch=5)
         self.width = 28
         self.height = 28
 
@@ -108,8 +108,20 @@ class Mnist(Dataset):
         features = features.reshape(len(labels), 3, 28, 28).transpose(0, 2, 3, 1)
 
         index_of_validation = int(len(features) * valid_ratio)
+        total_train_num = len(features) - int(len(features) * valid_ratio)
+        n_batches = self.num_batch
 
-        self.save_preprocessed_data(features[:-index_of_validation], labels[:-index_of_validation], self.path + '/mnist_preprocess_train.p')
+        for batch_i in range(1, n_batches + 1):
+            batch_filename = self.path + '/mnist_preprocess_batch_' + str(batch_i) + '.p'
+
+            if isfile(batch_filename):
+                print(batch_filename + ' already exists')
+                flag = False
+            else:
+                start_index = int((batch_i-1) * total_train_num/n_batches)
+                end_index = int(start_index + total_train_num/n_batches)
+
+                self.save_preprocessed_data(features[start_index:end_index], labels[start_index:end_index], batch_filename)
 
         valid_features.extend(features[-index_of_validation:])
         valid_labels.extend(labels[-index_of_validation:])
@@ -142,7 +154,7 @@ class Mnist(Dataset):
             yield features[start:end], labels[start:end]
 
     def get_training_batches_from_preprocessed(self, batch_id, batch_size, scale_to_imagenet=False):
-        filename = self.path + '/mnist_preprocess_train.p'
+        filename = self.path + '/mnist_preprocess_batch_' + str(batch_id) + '.p'
         features, labels = pickle.load(open(filename, mode='rb'))
 
         if scale_to_imagenet:
