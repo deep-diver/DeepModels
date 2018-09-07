@@ -8,6 +8,9 @@ Dataset and model should be provided to a trainer, and then the trainer knows ho
 
 ## Pre-defined Classes
 #### Datasets
+- **[MNIST](http://yann.lecun.com/exdb/mnist)**
+  - 10 classes of handwritten digits images in size of 28x28
+  - 60,000 training images, 10,000 testing images
 - **[CIFAR-10](https://www.cs.toronto.edu/~kriz/cifar.html)**
   - 10 classes of colored images in size of 32x32
   - 50,000 training images, 10,000 testing images
@@ -17,9 +20,6 @@ Dataset and model should be provided to a trainer, and then the trainer knows ho
   - 600 images per class
   - 500 training images, 100 testing images per class
 - **Things to be added**
-  - **[MNIST](http://yann.lecun.com/exdb/mnist)** (coming soon)
-    - 10 classes of handwritten digits images in size of 28x28
-    - 60,000 training images, 10,000 testing images
   - **[EMNIST](https://www.nist.gov/itl/iad/image-group/emnist-dataset)** (extension of MNIST to handwritten letters)
   - **[ImageNet](http://www.image-net.org/)**
 
