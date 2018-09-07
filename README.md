@@ -20,7 +20,7 @@ Dataset and model should be provided to a trainer, and then the trainer knows ho
   - 600 images per class
   - 500 training images, 100 testing images per class
 - **Things to be added**
-  - **[EMNIST](https://www.nist.gov/itl/iad/image-group/emnist-dataset)** (extension of MNIST to handwritten letters)
+  - **[STL-10](https://cs.stanford.edu/~acoates/stl10/)**
   - **[ImageNet](http://www.image-net.org/)**
 
 #### Models
