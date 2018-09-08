@@ -157,6 +157,7 @@ class ResNet(ImgClfModel):
         # count 1
         if pool:
             out = block(x, num_outputs, kernel_sizes, pool=True)
+            repeat = repeat - 1
 
         for i in range(repeat-1):
             out = block(x, num_outputs, kernel_sizes)
