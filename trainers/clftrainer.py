@@ -97,7 +97,7 @@ class ClfTrainer:
                        epochs, batch_size,
                        save_model_to, save_every_epoch)
 
-    def train_from_ckpt(self, epochs, batch_size, learning_rate, save_model_from, save_model_to, save_every_epoch=1, options=None):
+    def resume_training_from_ckpt(self, epochs, batch_size, learning_rate, save_model_from, save_model_to, save_every_epoch=1, options=None):
         graph = tf.Graph()
         with graph.as_default():
             input, output = self.clf_model.set_dataset(self.clf_dataset)
