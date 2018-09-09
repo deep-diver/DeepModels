@@ -26,12 +26,10 @@ Dataset and model should be provided to a trainer, and then the trainer knows ho
 #### Models
 - **[AlexNet](https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf)**
 - **[VGG](https://arxiv.org/pdf/1409.1556.pdf)** (model type = [A | A-LRN | B | C | D | E])
-  - **A:** 11 layers
-  - **A-LRN:** 11 layers with LRN (Local Response Normalization)
-  - **B:** 13 layers
-  - **C:** 13 layers with additional convolutional layer whose kernel size is 1x1
-  - **D:** 16 layers (known as VGG16)
-  - **E:** 19 layers (known as VGG19)
+  - **A:** 11 layers, **A-LRN:** 11 layers with LRN (Local Response Normalization)
+  - **B:** 13 layers, **C:** 13 layers with additional convolutional layer whose kernel size is 1x1
+  - **D:** 16 layers (known as **VGG16**)
+  - **E:** 19 layers (known as **VGG19**)
 - **[Inception V1 (GoogLeNet)](https://arxiv.org/pdf/1409.4842.pdf)**
 - **[Residual Network](https://arxiv.org/pdf/1512.03385.pdf)** (model type = [18 | 34 | 50 | 101 | 152])
 - **Things to be added**
