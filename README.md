@@ -78,8 +78,8 @@ from trainers.clftrainer import ClfTrainer
 inceptionv1 = GoogLeNet()
 cifar10_dataset = Cifar10()
 trainer = ClfTrainer(inceptionv1, cifar10_dataset)
-trainer.train_from_ckpt(epochs, batch_size, learning_rate,
-                        './inceptionv1-cifar10.ckpt-1', './new-inceptionv1-cifar10.ckpt')
+trainer.resume_training_from_ckpt(epochs, batch_size, learning_rate,
+                                  './inceptionv1-cifar10.ckpt-1', './new-inceptionv1-cifar10.ckpt')
 ```
 
 #### Transfer Learning
