@@ -1,5 +1,6 @@
 from urllib.request import urlretrieve
 from os.path import isfile, isdir
+import os
 
 from tqdm import tqdm
 import tarfile
@@ -15,7 +16,7 @@ from dataset.dataset import DownloadProgress
 
 class Cifar100(Dataset):
     def __init__(self):
-        Dataset.__init__(self, name='Cifar-100', path='cifar-100-python',  num_classes=100, num_batch=1)
+        Dataset.__init__(self, name='Cifar-100', path='cifar-100-python',  num_classes=100, num_batch=5)
         self.width = 32
         self.height = 32
 
@@ -54,14 +55,26 @@ class Cifar100(Dataset):
         features, labels = self.__load_batch__()
 
         index_of_validation = int(len(features) * valid_ratio)
+        total_train_num = len(features) - int(len(features) * valid_ratio)
+        n_batches = self.num_batch
 
-        self.save_preprocessed_data(features[:-index_of_validation], labels[:-index_of_validation], 'cifar100_preprocess_train.p')
+        for batch_i in range(1, n_batches + 1):
+            batch_filename = self.path + '/cifar100_preprocess_batch_' + str(batch_i) + '.p'
+
+            if isfile(batch_filename):
+                print(batch_filename + ' already exists')
+                flag = False
+            else:
+                start_index = int((batch_i-1) * total_train_num/n_batches)
+                end_index = int(start_index + total_train_num/n_batches)
+
+                self.save_preprocessed_data(features[start_index:end_index], labels[start_index:end_index], batch_filename)        
 
         valid_features.extend(features[-index_of_validation:])
         valid_labels.extend(labels[-index_of_validation:])
 
         # preprocess the all stacked validation dataset
-        self.save_preprocessed_data(np.array(valid_features), np.array(valid_labels), 'cifar100_preprocess_validation.p')
+        self.save_preprocessed_data(np.array(valid_features), np.array(valid_labels), self.path + '/cifar100_preprocess_validation.p')
 
         # load the test dataset
         with open(self.path + '/test', mode='rb') as file:
@@ -72,7 +85,7 @@ class Cifar100(Dataset):
         test_labels = batch['fine_labels']
 
         # Preprocess and Save all testing data
-        self.save_preprocessed_data(np.array(test_features), np.array(test_labels), 'cifar100_preprocess_testing.p')
+        self.save_preprocessed_data(np.array(test_features), np.array(test_labels), self.path + '/cifar100_preprocess_testing.p')
 
     def get_batches_from(self, features, labels, batch_size):
         for start in range(0, len(features), batch_size):
@@ -80,7 +93,7 @@ class Cifar100(Dataset):
             yield features[start:end], labels[start:end]
 
     def get_training_batches_from_preprocessed(self, batch_id, batch_size, scale_to_imagenet=False):
-        filename = 'cifar100_preprocess_train.p'
+        filename = self.path + '/cifar100_preprocess_batch_' + str(batch_id) + '.p'
         features, labels = pickle.load(open(filename, mode='rb'))
 
         if scale_to_imagenet:
@@ -89,7 +102,7 @@ class Cifar100(Dataset):
         return self.get_batches_from(features, labels, batch_size)
 
     def get_valid_set(self, scale_to_imagenet=False):
-        valid_features, valid_labels = pickle.load(open('cifar100_preprocess_validation.p', mode='rb'))
+        valid_features, valid_labels = pickle.load(open(self.path + '/cifar100_preprocess_validation.p', mode='rb'))
 
         if scale_to_imagenet:
             valid_features = self.convert_to_imagenet_size(valid_features)
