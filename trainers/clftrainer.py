@@ -191,3 +191,25 @@ class ClfTrainer:
                     print('epoch: {} is saved...'.format(epoch+1))
                     saver2 = tf.train.Saver()
                     saver2.save(sess, save_model_to, global_step=epoch+1, write_meta_graph=False)
+
+    def run_test(self, 
+                 data, save_model_from, options=None):
+        graph = tf.Graph()
+        with graph.as_default():
+            input, _ = self.clf_model.set_dataset(self.clf_dataset)
+            out_layers = self.clf_model.create_model(input, options)
+
+            # aux_softmax is not implemented yet
+            final_out_layer = out_layers[len(out_layers)-1]
+            softmax_result = tf.nn.softmax(final_out_layer)
+
+        with tf.Session(graph=graph) as sess:
+            sess.run(tf.global_variables_initializer())
+
+            saver = tf.train.Saver(tf.trainable_variables())
+            saver.restore(sess, save_model_from)
+
+            results = sess.run(softmax_result,
+                                feed_dict={input:batch_valid_features})
+
+        return results
