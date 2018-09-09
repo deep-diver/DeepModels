@@ -7,6 +7,16 @@ from tensorflow.contrib.layers import max_pool2d
 from tensorflow.contrib.layers import flatten
 from tensorflow.contrib.layers import fully_connected
 
+"""
+    Implementation of AlexNet from ILSVRC 2012. The original architecture is invented by Alex Krizhevsky @Toronto Univ.
+    The original architecture used 2 GPUs because of the hardware limitation like a lack of memory.
+    In this implementation, 2-GPU architecture is not considered.
+
+    The main technical contributions from this architecture are "Local Response Normalization(LRN)", 
+    "Dropout", "Retified Linear Unit(ReLU)", and "Overlapped Max-pooling". Some of these techniques are 
+    being used even nowadays. It is not the first time for AlexNet to introduce these techniques, 
+    but AlexNet showed they are very usedful in deep learning.
+"""
 class AlexNet(ImgClfModel):
     def __init__(self):
         ImgClfModel.__init__(self, scale_to_imagenet=True)

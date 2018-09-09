@@ -8,6 +8,11 @@ from tensorflow.contrib.layers import avg_pool2d
 from tensorflow.contrib.layers import flatten
 from tensorflow.contrib.layers import fully_connected
 
+"""
+    Implementation of GoogLeNet from ILSVRC 2014. The original architecture is invented by Christian Szegedy @Google.
+
+    The main technical contributions from this architecture are "concatenation of different kernels", and "auxiliary loss functions"
+"""
 class GoogLeNet(ImgClfModel):
     def __init__(self):
         ImgClfModel.__init__(self, scale_to_imagenet=True)

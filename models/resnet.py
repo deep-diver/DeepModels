@@ -8,6 +8,11 @@ from tensorflow.contrib.layers import avg_pool2d
 from tensorflow.contrib.layers import flatten
 from tensorflow.contrib.layers import fully_connected
 
+"""
+    Implementation of Residual Network from ILSVRC 2015. The original architecture is invented by Kaiming He @Microsoft.
+
+    The main technical contributions from this architecture are "identity mapping", and "making network very very deep"
+"""
 class ResNet(ImgClfModel):
     def __init__(self):
         ImgClfModel.__init__(self, scale_to_imagenet=True)

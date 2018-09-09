@@ -7,6 +7,12 @@ from tensorflow.contrib.layers import max_pool2d
 from tensorflow.contrib.layers import flatten
 from tensorflow.contrib.layers import fully_connected
 
+"""
+    Implementation of VGGs from ILSVRC 2014. The original architecture is invented by VGG (Visual Geometry Group) @Oxford.
+    This one didnt' win the ILSVRC 2014, but it took the 2nd place. It is very popular and well-known to lots of new comers in deep learning area.
+
+    The main technical contributions from this architecture are "3x3 filters", and very simple architecture with deeper depth.
+"""
 class VGG(ImgClfModel):
     def __init__(self):
         ImgClfModel.__init__(self, scale_to_imagenet=True)
