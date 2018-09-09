@@ -100,10 +100,13 @@ class Mnist(Dataset):
 
         features, labels = self.__load_batch__()
 
+        # converting 1 channel data to 3 channel data
         tmp_features = []
         for feature in features:
             tmp_features.append(np.resize(feature, (28, 28, 3)))
 
+        # reordering b, w, h, c 
+        # (batch, width, height, channel)
         features = np.asarray(tmp_features)
         features = features.reshape(len(labels), 3, 28, 28).transpose(0, 2, 3, 1)
 
@@ -138,6 +141,7 @@ class Mnist(Dataset):
             magic, num, rows, cols = struct.unpack(">IIII", test_image_file.read(16))
             test_features = np.fromfile(test_image_file, dtype=np.uint8).reshape(len(test_labels), rows, cols)
 
+        # converting 1 channel data to 3 channel data
         tmp_features = []
         for feature in test_features:
             tmp_features.append(np.resize(feature, (28, 28, 3)))
