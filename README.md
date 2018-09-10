@@ -96,6 +96,22 @@ trainer.run_transfer_learning(epochs, batch_size, learning_rate,
                               './new-inceptionv1-cifar10.ckpt-1', './inceptionv1-ciafar100.ckpt')
 ```
 
+#### Testing
+```python
+from dataset.cifar100_dataset import Cifar100
+
+from models.googlenet import GoogLeNet
+from trainers.clftrainer import ClfTrainer
+
+# prepare images to test
+images = ...
+
+inceptionv1 = GoogLeNet()
+cifar10_dataset = Cifar100()
+trainer = ClfTrainer(inceptionv1, cifar10_dataset)
+results = trainer.run_testing(images, './inceptionv1-ciafar100.ckpt-1')
+```
+
 ## Basic Workflow
 1. Define/Instantiate a dataset
 2. Define/Instantiate a model
