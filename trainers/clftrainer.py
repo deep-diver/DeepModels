@@ -199,7 +199,6 @@ class ClfTrainer:
             input, _ = self.clf_model.set_dataset(self.clf_dataset)
             out_layers = self.clf_model.create_model(input, options)
 
-            # aux_softmax is not implemented yet
             final_out_layer = out_layers[len(out_layers)-1]
             softmax_result = tf.nn.softmax(final_out_layer)
 
