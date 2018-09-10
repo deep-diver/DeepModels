@@ -192,7 +192,7 @@ class ClfTrainer:
                     saver2 = tf.train.Saver()
                     saver2.save(sess, save_model_to, global_step=epoch+1, write_meta_graph=False)
 
-    def run_test(self, 
+    def run_testing(self,
                  data, save_model_from, options=None):
         graph = tf.Graph()
         with graph.as_default():
@@ -210,6 +210,6 @@ class ClfTrainer:
             saver.restore(sess, save_model_from)
 
             results = sess.run(softmax_result,
-                                feed_dict={input:batch_valid_features})
+                                feed_dict={input:data})
 
         return results
