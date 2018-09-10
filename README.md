@@ -13,6 +13,12 @@ Dataset and model should be provided to a trainer, and then the trainer knows ho
 - tqdm >= 4.11.2
 - urllib3 >= 1.23
 
+```sh
+# install all the requirements.
+
+pip install -r requirements.txt
+```
+
 ## Pre-defined Classes
 #### Datasets
 - **[MNIST](http://yann.lecun.com/exdb/mnist)**
