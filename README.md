@@ -6,6 +6,13 @@ In order to try with state-of-the-art deep learning models, datasets to be fed i
 
 Dataset and model should be provided to a trainer, and then the trainer knows how to run training, resuming where the last training is left off, and transfer learning.
 
+## Dependencies
+- numpy >= 1.14.5
+- scikit-image >= 0.12.3
+- tensorflow >= 1.6
+- tqdm >= 4.11.2
+- urllib3 >= 1.23
+
 ## Pre-defined Classes
 #### Datasets
 - **[MNIST](http://yann.lecun.com/exdb/mnist)**
