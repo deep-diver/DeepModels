@@ -13,14 +13,14 @@ class ClfTrainer:
 
     def __run_train__(self, sess, input, output,
                         batch_i, batch_size,
-                        cost_func, optimizer,
+                        cost_func, train_op,
                         scale_to_imagenet=False):
 
         total_loss = 0
         count = 0
 
         for batch_features, batch_labels in self.clf_dataset.get_training_batches_from_preprocessed(batch_i, batch_size, scale_to_imagenet):
-            loss, _ = sess.run([cost_func, optimizer],
+            loss, _ = sess.run([cost_func, train_op],
                                 feed_dict={input: batch_features,
                                            output: batch_labels})
             total_loss = total_loss + loss
@@ -41,16 +41,11 @@ class ClfTrainer:
         return valid_acc/tmp_num
 
     def __train__(self, input, output,
-                    cost_func, optimizer, accuracy,
+                    cost_func, train_op, accuracy,
                     epochs, batch_size, save_model_path,
                     save_every_epoch=1):
-        loss = tf.identity(cost_func, 'loss')
-        accuracy = tf.identity(accuracy, 'accuracy')
-
         with tf.Session() as sess:
             sess.run(tf.global_variables_initializer())
-
-            tf.add_to_collection('optimizer', optimizer)
 
             print('starting training ... ')
             for epoch in range(epochs):
@@ -60,7 +55,7 @@ class ClfTrainer:
                     loss = self.__run_train__(sess,
                                               input, output,
                                               batch_i, batch_size,
-                                              cost_func, optimizer,
+                                              cost_func, train_op,
                                               self.clf_model.scale_to_imagenet)
                     print('Epoch {:>2}, {} Batch {}: '.format(epoch + 1, self.clf_dataset.name, batch_i), end='')
                     print('Avg. Loss: {} '.format(loss), end='')
@@ -76,6 +71,33 @@ class ClfTrainer:
                     saver = tf.train.Saver()
                     saver.save(sess, save_model_path, global_step=epoch+1, write_meta_graph=False)
 
+    def __get_losses_and_accuracy__(self, out_layers, output, learning_rate, options=None):
+        is_loss_weights_considered = False
+        if 'loss_weights' in options:
+            is_loss_weights_considered = True
+
+        aux_cost_sum = 0
+        if is_loss_weights_considered:
+            for i in range(len(out_layers) - 1):
+                aux_out_layer = out_layers[i]
+                aux_cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=aux_out_layer, labels=output))
+                aux_cost_sum += aux_cost * options['loss_weights'][i]
+
+        final_out_layer = out_layers[len(out_layers)-1]
+        cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=final_out_layer, labels=output))
+
+        if is_loss_weights_considered:
+            cost = cost * options['loss_weights'][len(out_layers)-1]
+
+        optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
+        gradients = optimizer.compute_gradients(cost + aux_cost_sum)
+        train_op = optimizer.apply_gradients(gradients)
+
+        correct_pred = tf.equal(tf.argmax(final_out_layer, 1), tf.argmax(output, 1))
+        accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
+
+        return cost, train_op, accuracy
+
     # default to use AdamOptimizer w/ softmax_cross_entropy_with_logits_v2
     def run_training(self,
                      epochs, batch_size, learning_rate,
@@ -84,16 +106,10 @@ class ClfTrainer:
         input, output = self.clf_model.set_dataset(self.clf_dataset)
         out_layers = self.clf_model.create_model(input, options)
 
-        # aux_softmax is not implemented yet
-        final_out_layer = out_layers[len(out_layers)-1]
-        cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=final_out_layer, labels=output))
-        optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
-
-        correct_pred = tf.equal(tf.argmax(final_out_layer, 1), tf.argmax(output, 1))
-        accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
+        cost, train_op, accuracy = self.__get_losses_and_accuracy__(out_layers, output, learning_rate, options)
 
         self.__train__(input, output,
-                       cost, optimizer, accuracy,
+                       cost, train_op, accuracy,
                        epochs, batch_size,
                        save_model_to, save_every_epoch)
 
@@ -103,13 +119,7 @@ class ClfTrainer:
             input, output = self.clf_model.set_dataset(self.clf_dataset)
             out_layers = self.clf_model.create_model(input, options)
 
-            # aux_softmax is not implemented yet
-            final_out_layer = out_layers[len(out_layers)-1]
-            cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=final_out_layer, labels=output))
-            optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
-
-            correct_pred = tf.equal(tf.argmax(final_out_layer, 1), tf.argmax(output, 1))
-            accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
+            cost, train_op, accuracy = self.__get_losses_and_accuracy__(out_layers, output, learning_rate, options)
 
         with tf.Session(graph=graph) as sess:
             sess.run(tf.global_variables_initializer())
@@ -125,7 +135,7 @@ class ClfTrainer:
                     loss = self.__run_train__(sess,
                                               input, output,
                                               batch_i, batch_size,
-                                              cost, optimizer,
+                                              cost, train_op,
                                               self.clf_model.scale_to_imagenet)
                     print('Epoch {:>2}, {} Batch {}: '.format(epoch + 1, self.clf_dataset.name, batch_i), end='')
                     print('Avg. Loss: {} '.format(loss), end='')
@@ -149,13 +159,7 @@ class ClfTrainer:
             input, output = self.clf_model.set_dataset(self.clf_dataset)
             out_layers = self.clf_model.create_model(input, options)
 
-            # aux_softmax is not implemented yet
-            final_out_layer = out_layers[len(out_layers)-1]
-            cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=final_out_layer, labels=output))
-            optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
-
-            correct_pred = tf.equal(tf.argmax(final_out_layer, 1), tf.argmax(output, 1))
-            accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
+            cost, train_op, accuracy = self.__get_losses_and_accuracy__(out_layers, output, learning_rate, options)
 
         with tf.Session(graph=graph) as sess:
             sess.run(tf.global_variables_initializer())
@@ -176,7 +180,7 @@ class ClfTrainer:
                     loss = self.__run_train__(sess,
                                               input, output,
                                               batch_i, batch_size,
-                                              cost, optimizer,
+                                              cost, train_op,
                                               self.clf_model.scale_to_imagenet)
                     print('Epoch {:>2}, {} Batch {}: '.format(epoch + 1, self.clf_dataset.name, batch_i), end='')
                     print('Avg. Loss: {} '.format(loss), end='')
