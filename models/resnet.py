@@ -14,17 +14,10 @@ from tensorflow.contrib.layers import fully_connected
     The main technical contributions from this architecture are "identity mapping", and "making network very very deep"
 """
 class ResNet(ImgClfModel):
-    def __init__(self):
-        ImgClfModel.__init__(self, scale_to_imagenet=True)
+    def __init__(self, model_type='50'):
+        ImgClfModel.__init__(self, scale_to_imagenet=True, model_type=model_type)
 
-    def create_model(self, input, options=None):
-        if options is None:
-            raise TypeError        
-
-        # 18, 34, 50, 101, 152
-        model_type = options['model_type']
-        self.model_type = model_type        
-
+    def create_model(self, input):
         with tf.variable_scope('conv1'):
             conv1 = conv2d(input, num_outputs=64,
                             kernel_size=[7,7], stride=2, padding='SAME',
@@ -36,20 +29,20 @@ class ResNet(ImgClfModel):
         with tf.variable_scope('conv2'):
             conv2 = max_pool2d(conv1, kernel_size=[3,3], stride=2, padding='SAME')
 
-            if model_type is "18" or model_type is "34":
+            if self.model_type is "18" or self.model_type is "34":
                 conv2 = self.repeat_residual_blocks(repeat=2, 
                                                     x=conv2, 
                                                     block=self.residual_block_a, 
                                                     num_outputs=[64,64], kernel_sizes=[[3,3], [3,3]],
                                                     pool=False)
-                if model_type is "34":
+                if self.model_type is "34":
                     conv2 = self.repeat_residual_blocks(repeat=2, 
                                                         x=conv2,
                                                         block=self.residual_block_a, 
                                                         num_outputs=[64], kernel_sizes=[[3,3] [3,3]],
                                                         pool=False)
 
-            elif model_type is "50" or model_type is "101" or model_type is "152":
+            elif self.model_type is "50" or self.model_type is "101" or self.model_type is "152":
                 conv2 = self.repeat_residual_blocks(repeat=3, 
                                                     x=conv2, 
                                                     block=self.residual_block_b, 
@@ -58,26 +51,26 @@ class ResNet(ImgClfModel):
             self.conv2 = conv2
 
         with tf.variable_scope('conv3'):
-            if model_type is "18" or model_type is "34":
+            if self.model_type is "18" or self.model_type is "34":
                 conv3 = self.repeat_residual_blocks(repeat=2, 
                                                     x=conv2,
                                                     block=self.residual_block_a, 
                                                     num_outputs=[128,128], kernel_sizes=[[3,3], [3,3]],
                                                     pool=True)   
-                if model_type is "34":
+                if self.model_type is "34":
                     conv3 = self.repeat_residual_blocks(repeat=2, 
                                                         x=conv3,
                                                         block=self.residual_block_a, 
                                                         num_outputs=[128,128], kernel_sizes=[[3,3], [3,3]],
                                                         pool=False)
 
-            elif model_type is "50" or model_type is "101" or model_type is "152":
+            elif self.model_type is "50" or self.model_type is "101" or self.model_type is "152":
                 conv3 = self.repeat_residual_blocks(repeat=4, 
                                                     x=conv2, 
                                                     block=self.residual_block_b, 
                                                     num_outputs=[128,128,512], kernel_sizes=[[1,1], [3,3], [1,1]],
                                                     pool=True)
-                if model_type is "152":
+                if self.model_type is "152":
                     conv3 = self.repeat_residual_blocks(repeat=4, 
                                                         x=conv3, 
                                                         block=self.residual_block_b, 
@@ -87,34 +80,34 @@ class ResNet(ImgClfModel):
             self.conv3 = conv3
         
         with tf.variable_scope('conv4'):
-            if model_type is "18" or model_type is "34":
+            if self.model_type is "18" or self.model_type is "34":
                 conv4 = self.repeat_residual_blocks(repeat=2, 
                                                     x=conv3,
                                                     block=self.residual_block_a, 
                                                     num_outputs=[256,256], kernel_sizes=[[3,3], [3,3]],
                                                     pool=True)  
-                if model_type is "34":
+                if self.model_type is "34":
                     conv4 = self.repeat_residual_blocks(repeat=4, 
                                                         x=conv4,
                                                         block=self.residual_block_a, 
                                                         num_outputs=[256,256], kernel_sizes=[[3,3], [3,3]],
                                                         pool=False)  
 
-            elif model_type is "50" or model_type is "101" or model_type is "152":
+            elif self.model_type is "50" or self.model_type is "101" or self.model_type is "152":
                 conv4 = self.repeat_residual_blocks(repeat=6, 
                                                     x=conv3,
                                                     block=self.residual_block_b, 
                                                     num_outputs=[256,256,1024], kernel_sizes=[[1,1], [3,3], [1,1]],
                                                     pool=True)
 
-                if model_type is "101" or model_type is "152":
+                if self.model_type is "101" or self.model_type is "152":
                     conv4 = self.repeat_residual_blocks(repeat=17, 
                                                         x=conv4,
                                                         block=self.residual_block_b, 
                                                         num_outputs=[256,256,1024], kernel_sizes=[[1,1], [3,3], [1,1]],
                                                         pool=False)
 
-                if model_type is "152":
+                if self.model_type is "152":
                     conv4 = self.repeat_residual_blocks(repeat=77, 
                                                         x=conv4,
                                                         block=self.residual_block_b, 
@@ -124,20 +117,20 @@ class ResNet(ImgClfModel):
             self.conv4 = conv4
 
         with tf.variable_scope('conv5'):
-            if model_type is "18" or model_type is "34":
+            if self.model_type is "18" or self.model_type is "34":
                 conv5 = self.repeat_residual_blocks(repeat=2, 
                                                     x=conv4,
                                                     block=self.residual_block_a, 
                                                     num_outputs=[512,512], kernel_sizes=[[3,3], [3,3]],
                                                     pool=True)
-                if model_type is "34":
+                if self.model_type is "34":
                     conv5 = self.repeat_residual_blocks(repeat=1,
                                                         x=conv5,
                                                         block=self.residual_block_a, 
                                                         num_outputs=[512,512], kernel_sizes=[[3,3], [3,3]],
                                                         pool=True)
 
-            elif model_type is "50" or model_type is "101" or model_type is "152":
+            elif self.model_type is "50" or self.model_type is "101" or self.model_type is "152":
                 conv5 = self.repeat_residual_blocks(repeat=3, 
                                                     x=conv4,
                                                     block=self.residual_block_b, 

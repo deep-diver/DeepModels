@@ -21,7 +21,7 @@ class AlexNet(ImgClfModel):
     def __init__(self):
         ImgClfModel.__init__(self, scale_to_imagenet=True)
 
-    def create_model(self, input, options=None):
+    def create_model(self, input):
         # 1st
         with tf.variable_scope('group1'):
             self.conv1 = conv2d(input, num_outputs=96,

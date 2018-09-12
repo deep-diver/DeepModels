@@ -17,7 +17,7 @@ class GoogLeNet(ImgClfModel):
     def __init__(self):
         ImgClfModel.__init__(self, scale_to_imagenet=True)
 
-    def create_model(self, input, options=None):
+    def create_model(self, input):
         # STEM Network
         with tf.variable_scope('stem'):
             self.conv2d_1 = conv2d(input, num_outputs=64,
@@ -218,7 +218,7 @@ class GoogLeNet(ImgClfModel):
             aux_flat = flatten(aux_conv2d_1)
             aux_fcl_1 = fully_connected(aux_flat, num_outputs=1024, activation_fn=tf.nn.relu)
             aux_droupout_1 = tf.nn.dropout(aux_fcl_1, 0.7)
-            self.aux_1_out = fully_connected(aux_droupout_1, num_outputs=self.num_classes, activation_fn=tf.nn.relu)
+            self.aux_1_out = fully_connected(aux_droupout_1, num_outputs=self.num_classes, activation_fn=None)
 
             # Aux #2 output
             aux_avg_pool_1 = avg_pool2d(self.inception_4d, kernel_size=[5,5], stride=3, padding='SAME')
@@ -228,7 +228,7 @@ class GoogLeNet(ImgClfModel):
             aux_flat = flatten(aux_conv2d_1)
             aux_fcl_1 = fully_connected(aux_flat, num_outputs=1024, activation_fn=tf.nn.relu)
             aux_droupout_1 = tf.nn.dropout(aux_fcl_1, 0.7)
-            self.aux_2_out = fully_connected(aux_droupout_1, num_outputs=self.num_classes, activation_fn=tf.nn.relu)
+            self.aux_2_out = fully_connected(aux_droupout_1, num_outputs=self.num_classes, activation_fn=None)
 
             # Final output
             self.final_avg_pool_1 = avg_pool2d(prev, kernel_size=[7,7], stride=1, padding='SAME')

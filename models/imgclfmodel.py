@@ -3,8 +3,9 @@ import tensorflow as tf
 from dataset.dataset import Dataset
 
 class ImgClfModel:
-    def __init__(self, scale_to_imagenet=False):
+    def __init__(self, scale_to_imagenet=False, model_type=None):
         self.scale_to_imagenet = scale_to_imagenet
+        self.model_type = model_type
 
     def set_dataset(self, dataset=None):
         if dataset is not None:
@@ -28,5 +29,5 @@ class ImgClfModel:
         else:
             raise TypeError
 
-    def create_model(self, input, options=None):
+    def create_model(self, input):
         raise NotImplementedError

@@ -14,8 +14,8 @@ from tensorflow.contrib.layers import fully_connected
     The main technical contributions from this architecture are "3x3 filters", and very simple architecture with deeper depth.
 """
 class VGG(ImgClfModel):
-    def __init__(self):
-        ImgClfModel.__init__(self, scale_to_imagenet=True)
+    def __init__(self, model_type='D'):
+        ImgClfModel.__init__(self, scale_to_imagenet=True, model_type=model_type)
 
     """
         types
@@ -26,13 +26,7 @@ class VGG(ImgClfModel):
         D : 16 weight layers
         E : 19 weight layers
     """
-    def create_model(self, input, options):
-        if options is None:
-            raise TypeError
-
-        model_type = options['model_type']
-        self.model_type = model_type
-
+    def create_model(self, input):
         self.group1 = []
         self.group2 = []
         self.group3 = []
@@ -46,12 +40,12 @@ class VGG(ImgClfModel):
                         activation_fn=tf.nn.relu)
             self.group1.append(group_1)
 
-            if model_type == 'A-LRN':
+            if self.model_type == 'A-LRN':
                 group_1 = tf.nn.local_response_normalization(group_1,
                                                              bias=2, alpha=0.0001, beta=0.75)
                 self.group1.append(group_1)
 
-            if model_type != 'A' and model_type == 'A-LRN':
+            if self.model_type != 'A' and self.model_type == 'A-LRN':
                 group_1 = conv2d(group_1, num_outputs=64,
                                     kernel_size=[3,3], stride=1, padding='SAME',
                                     activation_fn=tf.nn.relu)
@@ -67,7 +61,7 @@ class VGG(ImgClfModel):
                                 activation_fn=tf.nn.relu)
             self.group2.append(group_2)
 
-            if model_type != 'A' and model_type == 'A-LRN':
+            if self.model_type != 'A' and self.model_type == 'A-LRN':
                 group_2 = conv2d(group_2, num_outputs=128,
                                 kernel_size=[3,3], stride=1, padding='SAME',
                                 activation_fn=tf.nn.relu)
@@ -87,19 +81,19 @@ class VGG(ImgClfModel):
                                 activation_fn=tf.nn.relu)
             self.group3.append(group_3)
 
-            if model_type == 'C':
+            if self.model_type == 'C':
                 group_3 = conv2d(group_3, num_outputs=256,
                                     kernel_size=[1,1], stride=1, padding='SAME',
                                     activation_fn=tf.nn.relu)
                 self.group3.append(group_3)
 
-            if model_type == 'D' or model_type == 'E':
+            if self.model_type == 'D' or self.model_type == 'E':
                 group_3 = conv2d(group_3, num_outputs=256,
                                     kernel_size=[3,3], stride=1, padding='SAME',
                                     activation_fn=tf.nn.relu)
                 self.group3.append(group_3)
 
-            if model_type == 'E':
+            if self.model_type == 'E':
                 group_3 = conv2d(group_3, num_outputs=256,
                                     kernel_size=[3,3], stride=1, padding='SAME',
                                     activation_fn=tf.nn.relu)
@@ -119,19 +113,19 @@ class VGG(ImgClfModel):
                                 activation_fn=tf.nn.relu)
             self.group4.append(group_4)
 
-            if model_type == 'C':
+            if self.model_type == 'C':
                 group_4 = conv2d(group_4, num_outputs=512,
                                     kernel_size=[1,1], stride=1, padding='SAME',
                                     activation_fn=tf.nn.relu)
                 self.group4.append(group_4)
 
-            if model_type == 'D' or model_type == 'E':
+            if self.model_type == 'D' or self.model_type == 'E':
                 group_4 = conv2d(group_4, num_outputs=512,
                                     kernel_size=[3,3], stride=1, padding='SAME',
                                     activation_fn=tf.nn.relu)
                 self.group4.append(group_4)
 
-            if model_type == 'E':
+            if self.model_type == 'E':
                 group_4 = conv2d(group_4, num_outputs=512,
                                     kernel_size=[3,3], stride=1, padding='SAME',
                                     activation_fn=tf.nn.relu)
@@ -151,19 +145,19 @@ class VGG(ImgClfModel):
                                 activation_fn=tf.nn.relu)
             self.group5.append(group_5)
 
-            if model_type == 'C':
+            if self.model_type == 'C':
                 group_5 = conv2d(group_5, num_outputs=512,
                                     kernel_size=[1,1], stride=1, padding='SAME',
                                     activation_fn=tf.nn.relu)
                 self.group5.append(group_5)
 
-            if model_type == 'D' or model_type == 'E':
+            if self.model_type == 'D' or self.model_type == 'E':
                 group_5 = conv2d(group_5, num_outputs=512,
                                     kernel_size=[3,3], stride=1, padding='SAME',
                                     activation_fn=tf.nn.relu)
                 self.group5.append(group_5)
 
-            if model_type == 'E':
+            if self.model_type == 'E':
                 group_5 = conv2d(group_5, num_outputs=512,
                                     kernel_size=[3,3], stride=1, padding='SAME',
                                     activation_fn=tf.nn.relu)
