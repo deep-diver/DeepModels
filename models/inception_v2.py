@@ -10,9 +10,9 @@ from tensorflow.contrib.layers import fully_connected
 
 class InceptionV2(ImgClfModel):
     def __init__(self):
-        ImgClfModel.__init__(self, scale_to_imagenet=False)
+        ImgClfModel.__init__(self, scale_to_imagenet=True)
 
-    def create_model(self, input, options=None):
+    def create_model(self, input):
         # STEM Network
         with tf.variable_scope('stem'):
             self.conv2d_1 = conv2d(input, num_outputs=32,
@@ -52,7 +52,7 @@ class InceptionV2(ImgClfModel):
             branch_c = conv2d(branch_c, num_outputs=96,
                               kernel_size=[3,3], stride=1, padding='SAME')
 
-            branch_d = avg_pool2d(self.pool_2, kernel_size=[3,3], stride=2, padding='SAME'))
+            branch_d = avg_pool2d(self.pool_2, kernel_size=[3,3], stride=1, padding='SAME')
             branch_d = conv2d(branch_d, num_outputs=32,
                               kernel_size=[1,1], stride=1, padding='SAME')
 
@@ -79,7 +79,7 @@ class InceptionV2(ImgClfModel):
             branch_c = conv2d(branch_c, num_outputs=96,
                               kernel_size=[3,3], stride=1, padding='SAME')
 
-            branch_d = avg_pool2d(prev, kernel_size=[3,3], stride=2, padding='SAME'))
+            branch_d = avg_pool2d(prev, kernel_size=[3,3], stride=1, padding='SAME')
             branch_d = conv2d(branch_d, num_outputs=64,
                               kernel_size=[1,1], stride=1, padding='SAME')
 
@@ -106,7 +106,7 @@ class InceptionV2(ImgClfModel):
             branch_c = conv2d(branch_c, num_outputs=96,
                               kernel_size=[3,3], stride=1, padding='SAME')
 
-            branch_d = avg_pool2d(prev, kernel_size=[3,3], stride=2, padding='SAME'))
+            branch_d = avg_pool2d(prev, kernel_size=[3,3], stride=1, padding='SAME')
             branch_d = conv2d(branch_d, num_outputs=64,
                               kernel_size=[1,1], stride=1, padding='SAME')
                               
@@ -158,7 +158,7 @@ class InceptionV2(ImgClfModel):
             branch_c = conv2d(branch_c, num_outputs=192,
                               kernel_size=[1,7], stride=1, padding='SAME')
 
-            branch_d = avg_pool2d(prev, kernel_size=[3,3], stride=2, padding='SAME'))
+            branch_d = avg_pool2d(prev, kernel_size=[3,3], stride=1, padding='SAME')
             branch_d = conv2d(branch_d, num_outputs=192,
                               kernel_size=[1,1], stride=1, padding='SAME')
 
@@ -191,7 +191,7 @@ class InceptionV2(ImgClfModel):
             branch_c = conv2d(branch_c, num_outputs=192,
                               kernel_size=[1,7], stride=1, padding='SAME')
 
-            branch_d = avg_pool2d(prev, kernel_size=[3,3], stride=2, padding='SAME'))
+            branch_d = avg_pool2d(prev, kernel_size=[3,3], stride=1, padding='SAME')
             branch_d = conv2d(branch_d, num_outputs=192,
                               kernel_size=[1,1], stride=1, padding='SAME')
 
@@ -224,7 +224,7 @@ class InceptionV2(ImgClfModel):
             branch_c = conv2d(branch_c, num_outputs=192,
                               kernel_size=[1,7], stride=1, padding='SAME')
 
-            branch_d = avg_pool2d(prev, kernel_size=[3,3], stride=2, padding='SAME'))
+            branch_d = avg_pool2d(prev, kernel_size=[3,3], stride=1, padding='SAME')
             branch_d = conv2d(branch_d, num_outputs=192,
                               kernel_size=[1,1], stride=1, padding='SAME')
 
@@ -257,7 +257,7 @@ class InceptionV2(ImgClfModel):
             branch_c = conv2d(branch_c, num_outputs=192,
                               kernel_size=[1,7], stride=1, padding='SAME')
 
-            branch_d = avg_pool2d(prev, kernel_size=[3,3], stride=2, padding='SAME'))
+            branch_d = avg_pool2d(prev, kernel_size=[3,3], stride=1, padding='SAME')
             branch_d = conv2d(branch_d, num_outputs=192,
                               kernel_size=[1,1], stride=1, padding='SAME')
 
@@ -267,7 +267,7 @@ class InceptionV2(ImgClfModel):
             layers_concat.append(branch_c)
             layers_concat.append(branch_d)
             prev = tf.concat(layers_concat, 3)
-            self.aux = pref
+            self.aux = prev
 
             # inception 2-1 (grid size reduction)
             branch_a = conv2d(prev, num_outputs=192,
@@ -310,8 +310,8 @@ class InceptionV2(ImgClfModel):
             branch_c = conv2d(branch_c, num_outputs=384,
                               kernel_size=[3,1], stride=1, padding='SAME')
             
-            branch_d = max_pool2d(prev, kernel_size=[3,3], stride=2, padding='SAME')
-            branch_d = convd2d(branch_d, num_outputs=192,
+            branch_d = max_pool2d(prev, kernel_size=[3,3], stride=1, padding='SAME')
+            branch_d = conv2d(branch_d, num_outputs=192,
                                kernel_size=[1,1], stride=1, padding='SAME')
 
             layers_concat = list()
@@ -339,8 +339,8 @@ class InceptionV2(ImgClfModel):
             branch_c = conv2d(branch_c, num_outputs=384,
                               kernel_size=[3,1], stride=1, padding='SAME')
             
-            branch_d = max_pool2d(prev, kernel_size=[3,3], stride=2, padding='SAME')
-            branch_d = convd2d(branch_d, num_outputs=192,
+            branch_d = max_pool2d(prev, kernel_size=[3,3], stride=1, padding='SAME')
+            branch_d = conv2d(branch_d, num_outputs=192,
                                kernel_size=[1,1], stride=1, padding='SAME')
                                
             layers_concat = list()
@@ -354,12 +354,11 @@ class InceptionV2(ImgClfModel):
             self.aux_conv = conv2d(self.aux_pool, num_outputs=128,
                                    kernel_size=[1,1], stride=1, padding='SAME')
             self.aux_flat = flatten(self.aux_conv)
-            self.aux_fcl = fully_connected(self.aux_flat, num_outputs=768, activation_fn=tf.nn.relu)
-            self.aux_out = fully_connected(self.aux_fcl, num_outputs=self.num_classes, activation_fn=None)
+            self.aux_out = fully_connected(self.aux_flat, num_outputs=self.num_classes, activation_fn=None)
 
-            self.final_pool =  avg_pool2d(self.pool_2, kernel_size=[8,8], stride=2, padding='VALID'))
+            self.final_pool =  avg_pool2d(self.pool_2, kernel_size=[8,8], stride=2, padding='VALID')
             self.final_dropout = tf.nn.dropout(self.final_pool, 0.8)
             self.final_flat = flatten(self.final_dropout)
             self.final_out = fully_connected(self.final_flat, num_outputs=self.num_classes, activation_fn=None)
             
-        return [self.aux_out, self.out]
+        return [self.aux_out, self.final_out]
