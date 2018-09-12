@@ -5,6 +5,7 @@ import tensorflow as tf
 from models.alexnet import AlexNet
 from models.vgg import VGG
 from models.googlenet import GoogLeNet
+from models.resnet import ResNet
 from models.inception_v2 import InceptionV2
 # from models.inception_v3 import InceptionV3
 from trainers.predefined_loss import *
