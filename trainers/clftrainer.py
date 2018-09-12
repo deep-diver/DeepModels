@@ -1,10 +1,13 @@
 import time
 
 import tensorflow as tf
-from tensorflow.contrib.layers import conv2d
-from tensorflow.contrib.layers import max_pool2d
-from tensorflow.contrib.layers import flatten
-from tensorflow.contrib.layers import fully_connected
+
+from models.alexnet import AlexNet
+from models.vgg import VGG
+from models.googlenet import GoogLeNet
+from models.inception_v2 import InceptionV2
+# from models.inception_v3 import InceptionV3
+from trainers.predefined_loss import *
 
 class ClfTrainer:
     def __init__(self, clf_model, clf_dataset):
@@ -71,26 +74,28 @@ class ClfTrainer:
                     saver = tf.train.Saver()
                     saver.save(sess, save_model_path, global_step=epoch+1, write_meta_graph=False)
 
-    def __get_losses_and_accuracy__(self, out_layers, output, learning_rate, options=None):
+    def __get_simple_losses_and_accuracy__(self, out_layers, output, learning_rate, options=None):
         is_loss_weights_considered = False
-        if 'loss_weights' in options:
+        if options is not None and \
+           'loss_weights' in options and \
+           len(options['loss_weights']) is len(out_layers):
             is_loss_weights_considered = True
 
         aux_cost_sum = 0
         if is_loss_weights_considered:
             for i in range(len(out_layers) - 1):
                 aux_out_layer = out_layers[i]
-                aux_cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=aux_out_layer, labels=output))
+                aux_cost = tf.losses.softmax_cross_entropy(output, aux_out_layer, reduction=tf.losses.Reduction.MEAN) 
                 aux_cost_sum += aux_cost * options['loss_weights'][i]
 
         final_out_layer = out_layers[len(out_layers)-1]
-        cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=final_out_layer, labels=output))
+        cost = tf.losses.softmax_cross_entropy(output, final_out_layer, reduction=tf.losses.Reduction.MEAN) 
 
         if is_loss_weights_considered:
             cost = cost * options['loss_weights'][len(out_layers)-1]
 
         optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
-        gradients = optimizer.compute_gradients(cost + aux_cost_sum)
+        gradients = optimizer.compute_gradients(cost+aux_cost_sum)
         train_op = optimizer.apply_gradients(gradients)
 
         correct_pred = tf.equal(tf.argmax(final_out_layer, 1), tf.argmax(output, 1))
@@ -98,15 +103,31 @@ class ClfTrainer:
 
         return cost, train_op, accuracy
 
+    def __get_losses_and_accuracy__(self, model, output, out_layers, learning_rate, options=None):
+        if isinstance(model, AlexNet):
+            return get_alexnet_trainer(output, out_layers, learning_rate)
+        elif isinstance(model, VGG):
+            return get_vgg_trainer(output, out_layers, learning_rate)
+        elif isinstance(model, GoogLeNet):
+            return get_googlenet_trainer(output, out_layers, learning_rate)
+        elif isinstance(model, ResNet):
+            return get_resnet_trainer(output, out_layers, learning_rate)
+        elif isinstance(model, InceptionV2):
+            return get_inceptionv2_trainer(output, out_layers, learning_rate)
+        # elif isinstance(model, inceptionV3):
+        #     return get_inceptionv3_trainer(output, out_layers, learning_rate)
+        else:
+            return self.__get_simple_losses_and_accuracy__(out_layers, output, learning_rate, options)
+
     # default to use AdamOptimizer w/ softmax_cross_entropy_with_logits_v2
     def run_training(self,
                      epochs, batch_size, learning_rate,
                      save_model_to, save_every_epoch=1,
                      options=None):
         input, output = self.clf_model.set_dataset(self.clf_dataset)
-        out_layers = self.clf_model.create_model(input, options)
+        out_layers = self.clf_model.create_model(input)
 
-        cost, train_op, accuracy = self.__get_losses_and_accuracy__(out_layers, output, learning_rate, options)
+        cost, train_op, accuracy = self.__get_losses_and_accuracy__(self.clf_model, output, out_layers, learning_rate)
 
         self.__train__(input, output,
                        cost, train_op, accuracy,
@@ -117,9 +138,9 @@ class ClfTrainer:
         graph = tf.Graph()
         with graph.as_default():
             input, output = self.clf_model.set_dataset(self.clf_dataset)
-            out_layers = self.clf_model.create_model(input, options)
+            out_layers = self.clf_model.create_model(input)
 
-            cost, train_op, accuracy = self.__get_losses_and_accuracy__(out_layers, output, learning_rate, options)
+            cost, train_op, accuracy = self.__get_losses_and_accuracy__(self.clf_model, output, out_layers, learning_rate)
 
         with tf.Session(graph=graph) as sess:
             sess.run(tf.global_variables_initializer())
@@ -157,9 +178,9 @@ class ClfTrainer:
         graph = tf.Graph()
         with graph.as_default():
             input, output = self.clf_model.set_dataset(self.clf_dataset)
-            out_layers = self.clf_model.create_model(input, options)
+            out_layers = self.clf_model.create_model(input)
 
-            cost, train_op, accuracy = self.__get_losses_and_accuracy__(out_layers, output, learning_rate, options)
+            cost, train_op, accuracy = self.__get_losses_and_accuracy__(self.clf_model, output, out_layers, learning_rate)
 
         with tf.Session(graph=graph) as sess:
             sess.run(tf.global_variables_initializer())
@@ -201,7 +222,7 @@ class ClfTrainer:
         graph = tf.Graph()
         with graph.as_default():
             input, _ = self.clf_model.set_dataset(self.clf_dataset)
-            out_layers = self.clf_model.create_model(input, options)
+            out_layers = self.clf_model.create_model(input)
 
             final_out_layer = out_layers[len(out_layers)-1]
             softmax_result = tf.nn.softmax(final_out_layer)
