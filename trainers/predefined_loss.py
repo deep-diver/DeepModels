@@ -65,11 +65,11 @@ def get_inceptionv3_trainer(output, out_layers, learning_rate):
     aux_cost_sum = 0
     for i in range(len(out_layers) - 1):
         aux_out_layer = out_layers[i]
-        aux_cost = tf.losses.softmax_cross_entropy(output, aux_out_layer, reduction=tf.losses.Reduction.MEAN)
+        aux_cost = tf.losses.softmax_cross_entropy(output, aux_out_layer, label_smoothing=0.1, reduction=tf.losses.Reduction.MEAN)
         aux_cost_sum += aux_cost * 0.3
 
     final_out_layer = out_layers[len(out_layers)-1]
-    cost = tf.losses.softmax_cross_entropy(output, final_out_layer, reduction=tf.losses.Reduction.MEAN)
+    cost = tf.losses.softmax_cross_entropy(output, final_out_layer, label_smoothing=0.1, reduction=tf.losses.Reduction.MEAN)
 
     optimizer = tf.train.RMSPropOptimizer(learning_rate=learning_rate, momentum=0.9)
     gradients = optimizer.compute_gradients(cost+aux_cost_sum)

@@ -7,7 +7,7 @@ from models.vgg import VGG
 from models.googlenet import GoogLeNet
 from models.resnet import ResNet
 from models.inception_v2 import InceptionV2
-# from models.inception_v3 import InceptionV3
+from models.inception_v3 import InceptionV3
 from trainers.predefined_loss import *
 
 class ClfTrainer:
@@ -77,20 +77,28 @@ class ClfTrainer:
 
     def __get_simple_losses_and_accuracy__(self, out_layers, output, learning_rate, options=None):
         is_loss_weights_considered = False
-        if options is not None and \
-           'loss_weights' in options and \
-           len(options['loss_weights']) is len(out_layers):
-            is_loss_weights_considered = True
+        label_smoothings = [0 for i in range(len(out_layers))]
+
+        if options is not None:
+            if 'loss_weights' in options and \
+                len(options['loss_weights']) is len(out_layers):
+                    is_loss_weights_considered = True
+
+            if 'label_smoothings' in options and \
+                len(options['label_smoothings']) is len(out_layers):
+                    label_smoothings = options['label_smoothings']
 
         aux_cost_sum = 0
         if is_loss_weights_considered:
             for i in range(len(out_layers) - 1):
                 aux_out_layer = out_layers[i]
-                aux_cost = tf.losses.softmax_cross_entropy(output, aux_out_layer, reduction=tf.losses.Reduction.MEAN)
+                aux_label_smoothing = label_smoothings[i]
+                aux_cost = tf.losses.softmax_cross_entropy(output, aux_out_layer, label_smoothing=aux_label_smoothing, reduction=tf.losses.Reduction.MEAN)
                 aux_cost_sum += aux_cost * options['loss_weights'][i]
 
         final_out_layer = out_layers[len(out_layers)-1]
-        cost = tf.losses.softmax_cross_entropy(output, final_out_layer, reduction=tf.losses.Reduction.MEAN)
+        final_label_smoothing = label_smoothings[len(out_layers)-1]
+        cost = tf.losses.softmax_cross_entropy(output, final_out_layer, label_smoothing=final_label_smoothing, reduction=tf.losses.Reduction.MEAN)
 
         if is_loss_weights_considered:
             cost = cost * options['loss_weights'][len(out_layers)-1]
@@ -125,8 +133,9 @@ class ClfTrainer:
         elif isinstance(model, InceptionV2):
             return get_inceptionv2_trainer(output, out_layers, learning_rate) if optimizer_from_paper_flag else \
                    self.__get_simple_losses_and_accuracy__(out_layers, output, learning_rate, {'loss_weights': [0.4, 1.0]})
-        # elif isinstance(model, inceptionV3):
-        #     return get_inceptionv3_trainer(output, out_layers, learning_rate)
+        elif isinstance(model, InceptionV3):
+            return get_inceptionv3_trainer(output, out_layers, learning_rate) if optimizer_from_paper_flag else \
+                   self.__get_simple_losses_and_accuracy__(out_layers, output, learning_rate, {'loss_weights': [0.4, 1.0], 'label_smoothings': [0.1, 0.1]})
         else:
             return self.__get_simple_losses_and_accuracy__(out_layers, output, learning_rate, options)
 
