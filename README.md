@@ -45,8 +45,8 @@ pip install -r requirements.txt
   - **E:** 19 layers (known as **VGG19**)
 - **[Inception V1 (GoogLeNet)](https://arxiv.org/pdf/1409.4842.pdf)** | [[CODE]](./models/googlenet.py)
 - **[Residual Network](https://arxiv.org/pdf/1512.03385.pdf)** (model type = [18 | 34 | 50 | 101 | 152]) | [[CODE]](./models/resnet.py)
+- **[Inception V2](https://arxiv.org/pdf/1512.00567v3.pdf)** | [[CODE]](./models/inception_v2.py)
 - **Things to be added**
-  - **[Inception V2](https://arxiv.org/pdf/1512.00567v3.pdf)**
   - **[Inception V3](https://arxiv.org/pdf/1512.00567v3.pdf)**
   - **[Inception V4](https://arxiv.org/pdf/1602.07261.pdf)**
   - **[Inception+Resnet](https://arxiv.org/pdf/1602.07261.pdf)**
