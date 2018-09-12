@@ -19,6 +19,11 @@ Dataset and model should be provided to a trainer, and then the trainer knows ho
 pip install -r requirements.txt
 ```
 
+## Testing Environment
+- macOS High Sierra (10.13.6) + eGPU encloosure (Akitio Node) + NVIDIA GTX 1080Ti
+- [floydhub](https://www.floydhub.com/) + NVIDIA TESLA K80, + NVIDIA TESLA V100
+- [GCP cloud ML engine](https://cloud.google.com/ml-engine/) + NVIDIA TESLA K80, + NVIDIA TESLA P100, + NVIDIA TESLA V100
+
 ## Pre-defined Classes
 #### Datasets
 - **[MNIST](http://yann.lecun.com/exdb/mnist)**
