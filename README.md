@@ -53,10 +53,13 @@ pip install -r requirements.txt
 - **[Inception V2](https://arxiv.org/pdf/1512.00567v3.pdf)** | [[CODE]](./models/inception_v2.py)
 - **[Inception V3](https://arxiv.org/pdf/1512.00567v3.pdf)** | [[CODE]](./models/inception_v3.py)
 - **Things to be added**
+  - **[Residual Network V2](https://arxiv.org/pdf/1603.05027.pdf)**
   - **[Inception V4](https://arxiv.org/pdf/1602.07261.pdf)**
   - **[Inception+Resnet](https://arxiv.org/pdf/1602.07261.pdf)**
   - **[DenseNet](https://arxiv.org/pdf/1608.06993.pdf)**
   - **[SqueezeNet](https://arxiv.org/abs/1602.07360)**
+  - **[MobileNet](https://arxiv.org/pdf/1704.04861.pdf)**
+  - **[NASNet](https://arxiv.org/pdf/1707.07012.pdf)**
 
 #### Trainers
 - ClfTrainer: Trainer for image classification like ILSVRC
