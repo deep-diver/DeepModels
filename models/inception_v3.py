@@ -241,12 +241,12 @@ class InceptionV3(ImgClfModel):
                                    kernel_size=[1,1], stride=1, padding='SAME')
             self.aux_flat = flatten(self.aux_conv)
             self.aux_bn = tf.layers.batch_normalization(self.aux_flat)
-            self.aux_out = fully_connected(self.aux_flat, num_outputs=self.num_classes, activation_fn=None)
+            self.aux_out = fully_connected(self.aux_bn, num_outputs=self.num_classes, activation_fn=None)
 
             self.final_pool =  avg_pool2d(prev, kernel_size=[2,2], stride=1, padding='VALID')
             self.final_dropout = tf.nn.dropout(self.final_pool, 0.8)
             self.final_flat = flatten(self.final_dropout)
             self.final_bn = tf.layers.batch_normalization(self.final_flat)
-            self.final_out = fully_connected(self.final_flat, num_outputs=self.num_classes, activation_fn=None)
+            self.final_out = fully_connected(self.final_bn, num_outputs=self.num_classes, activation_fn=None)
 
         return [self.aux_out, self.final_out]
