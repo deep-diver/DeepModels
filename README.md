@@ -1,5 +1,7 @@
 # DeepModels
 
+<img width="300px" src="./overview.png">
+
 This repository is mainly for implementing and testing state-of-the-art deep learning models since 2012 when AlexNet has emerged. It will provide pre-trained models on each dataset later.
 
 In order to try with state-of-the-art deep learning models, datasets to be fed into and training methods should be also come along. This repository comes with three main parts, **Dataset**, **Model**, and **Trainer** to ease this process.
