@@ -57,7 +57,7 @@ class InceptionV4(ImgClfModel):
             stem_c = tf.concat(layers_concat, 3)
 
             branch_a = conv2d(stem_c, num_outputs=192,
-                              kernel_size=[3,3], stride=1, padding='VALID',
+                              kernel_size=[3,3], stride=2, padding='VALID',
                               activation_fn=tf.nn.relu)
             branch_b = max_pool2d(stem_c, kernel_size=[3,3], stride=2, padding='VALID')
             layers_concat = list()
@@ -198,7 +198,7 @@ class InceptionV4(ImgClfModel):
         # 3 x Inception-C
         with tf.variable_scope('inception_c'):
             for i in range(3):
-                branch_a = avg_pool2d(prev, kernel_size=[3,3], stride=2, padding='SAME')
+                branch_a = avg_pool2d(prev, kernel_size=[3,3], stride=1, padding='SAME')
                 branch_a = conv2d(branch_a, num_outputs=256,
                                   kernel_size=[1,1], stride=1, padding='SAME',
                                   activation_fn=tf.nn.relu)
