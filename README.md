@@ -145,6 +145,7 @@ results = trainer.run_testing(images, './inceptionv1-ciafar100.ckpt-1')
 4. Begin training/resuming/transfer learning
 
 ## References
+- [TensorFlow official website](https://www.tensorflow.org/)
 - [CNN Receptive Field Calculator](http://fomoro.com/tools/receptive-fields/index.html)
 - [A Simple Guide to the Versions of the Inception Network](https://towardsdatascience.com/a-simple-guide-to-the-versions-of-the-inception-network-7fc52b863202)
 - [UNDERSTANDING RESIDUAL NETWORKS](https://towardsdatascience.com/understanding-residual-networks-9add4b664b03)
