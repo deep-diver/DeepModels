@@ -8,7 +8,7 @@ from tensorflow.contrib.layers import avg_pool2d
 from tensorflow.contrib.layers import flatten
 from tensorflow.contrib.layers import fully_connected
 
-class Inception+ResnetV2(ImgClfModel):
+class Inception_ResnetV2(ImgClfModel):
     def __init__(self):
         ImgClfModel.__init__(self, scale_to_imagenet=True)
 
