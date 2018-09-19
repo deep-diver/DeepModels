@@ -42,6 +42,7 @@ class Inception_ResnetV1(ImgClfModel):
                 branch_a = conv2d(prev, num_outputs=32,
                                   kernel_size=[1,1], stride=1, padding='SAME',
                                   activation_fn=tf.nn.relu)
+                branch_a = tf.layers.batch_normalization(branch_a)
 
                 branch_b = conv2d(prev, num_outputs=32,
                                   kernel_size=[1,1], stride=1, padding='SAME',
@@ -49,6 +50,7 @@ class Inception_ResnetV1(ImgClfModel):
                 branch_b = conv2d(branch_b, num_outputs=32,
                                   kernel_size=[3,3], stride=1, padding='SAME',
                                   activation_fn=tf.nn.relu)
+                branch_b = tf.layers.batch_normalization(branch_b)
 
                 branch_c = conv2d(prev, num_outputs=32,
                                   kernel_size=[1,1], stride=1, padding='SAME',
@@ -59,6 +61,8 @@ class Inception_ResnetV1(ImgClfModel):
                 branch_c = conv2d(branch_c, num_outputs=32,
                                   kernel_size=[3,3], stride=1, padding='SAME',
                                   activation_fn=tf.nn.relu)
+                branch_c = tf.layers.batch_normalization(branch_c)
+
                 layers_concat = list()
                 layers_concat.append(branch_a)
                 layers_concat.append(branch_b)
@@ -67,8 +71,10 @@ class Inception_ResnetV1(ImgClfModel):
                 merge = conv2d(merge, num_outputs=256,
                                kernel_size=[1,1], stride=1, padding='SAME',
                                activation_fn=tf.nn.relu)
+                merge = tf.layers.batch_normalization(merge)
 
                 prev = tf.nn.relu(merge + identity)
+                prev = tf.layers.batch_normalization(prev)
 
         with tf.variable_scope('reduction_a'):
             branch_a = max_pool2d(prev, kernel_size=[3,3], stride=2, padding='VALID')
@@ -99,6 +105,7 @@ class Inception_ResnetV1(ImgClfModel):
                 branch_a = conv2d(prev, num_outputs=128,
                                   kernel_size=[1,1], stride=1, padding='SAME',
                                   activation_fn=tf.nn.relu)
+                branch_a = tf.layers.batch_normalization(branch_a)
 
                 branch_b = conv2d(prev, num_outputs=128,
                                   kernel_size=[1,1], stride=1, padding='SAME',
@@ -109,6 +116,8 @@ class Inception_ResnetV1(ImgClfModel):
                 branch_b = conv2d(branch_b, num_outputs=128,
                                   kernel_size=[7,1], stride=1, padding='SAME',
                                   activation_fn=tf.nn.relu)
+                branch_b = tf.layers.batch_normalization(branch_b)
+
                 layers_concat = list()
                 layers_concat.append(branch_a)
                 layers_concat.append(branch_b)
@@ -116,8 +125,10 @@ class Inception_ResnetV1(ImgClfModel):
                 merge = conv2d(merge, num_outputs=896,
                                kernel_size=[1,1], stride=1, padding='SAME',
                                activation_fn=tf.nn.relu)
+                merge = tf.layers.batch_normalization(merge)
 
                 prev = tf.nn.relu(merge + identity)
+                prev = tf.layers.batch_normalization(prev)
 
         with tf.variable_scope('reduction_b'):
             branch_a = max_pool2d(prev, kernel_size=[3,3], stride=2, padding='VALID')
@@ -159,6 +170,7 @@ class Inception_ResnetV1(ImgClfModel):
                 branch_a = conv2d(prev, num_outputs=192,
                                   kernel_size=[1,1], stride=1, padding='SAME',
                                   activation_fn=tf.nn.relu)
+                branch_a = tf.layers.batch_normalization(branch_a)
 
                 branch_b = conv2d(prev, num_outputs=192,
                                   kernel_size=[1,1], stride=1, padding='SAME',
@@ -169,6 +181,8 @@ class Inception_ResnetV1(ImgClfModel):
                 branch_b = conv2d(branch_b, num_outputs=192,
                                   kernel_size=[3,1], stride=1, padding='SAME',
                                   activation_fn=tf.nn.relu)
+                branch_b = tf.layers.batch_normalization(branch_b)
+
                 layers_concat = list()
                 layers_concat.append(branch_a)
                 layers_concat.append(branch_b)
@@ -176,8 +190,10 @@ class Inception_ResnetV1(ImgClfModel):
                 merge = conv2d(merge, num_outputs=1792,
                                kernel_size=[1,1], stride=1, padding='SAME',
                                activation_fn=tf.nn.relu)
+                merge = tf.layers.batch_normalization(merge)
 
                 prev = tf.nn.relu(merge + identity)
+                prev = tf.layers.batch_normalization(prev)
 
         with tf.variable_scope('final'):
             prev = avg_pool2d(prev, kernel_size=[3,3], stride=2, padding='SAME')
