@@ -66,7 +66,7 @@ class Inception_ResnetV2(ImgClfModel):
             prev = tf.concat(layers_concat, 3)
 
         with tf.variable_scope('inception_resnet_a'):
-            for i in range(5):
+            for i in range(10):
                 identity = prev
 
                 branch_a = conv2d(prev, num_outputs=32,
@@ -132,7 +132,7 @@ class Inception_ResnetV2(ImgClfModel):
             prev = tf.concat(layers_concat, 3)
 
         with tf.variable_scope('inception_resnet_b'):
-            for i in range(10):
+            for i in range(20):
                 identity = prev
 
                 branch_a = conv2d(prev, num_outputs=192,
@@ -199,7 +199,7 @@ class Inception_ResnetV2(ImgClfModel):
             prev = tf.concat(layers_concat, 3)
 
         with tf.variable_scope('inception_resnet_c'):
-            for i in range(5):
+            for i in range(10):
                 identity = prev
 
                 branch_a = conv2d(prev, num_outputs=192,
