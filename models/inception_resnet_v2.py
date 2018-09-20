@@ -157,7 +157,7 @@ class Inception_ResnetV2(ImgClfModel):
                 layers_concat.append(branch_a)
                 layers_concat.append(branch_b)
                 merge = tf.concat(layers_concat, 3)
-                merge = conv2d(merge, num_outputs=1154,
+                merge = conv2d(merge, num_outputs=1152,
                                kernel_size=[1,1], stride=1, padding='SAME',
                                activation_fn=tf.nn.relu)
                 merge = tf.layers.batch_normalization(merge)
