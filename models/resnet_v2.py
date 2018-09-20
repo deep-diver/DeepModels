@@ -37,7 +37,7 @@ class ResNetV2(ImgClfModel):
                                                         num_outputs=[64], kernel_sizes=[[3,3] [3,3]],
                                                         pool=False)
 
-            elif self.model_type is "50" or self.model_type is "101" or self.model_type is "152":
+            elif self.model_type is "50" or self.model_type is "101" or self.model_type is "152" or self.model_type is "200":
                 conv2 = self.repeat_residual_blocks(repeat=3,
                                                     x=conv2,
                                                     block=self.residual_block_b,
@@ -59,7 +59,7 @@ class ResNetV2(ImgClfModel):
                                                         num_outputs=[128,128], kernel_sizes=[[3,3], [3,3]],
                                                         pool=False)
 
-            elif self.model_type is "50" or self.model_type is "101" or self.model_type is "152":
+            elif self.model_type is "50" or self.model_type is "101" or self.model_type is "152" or self.model_type is "200":
                 conv3 = self.repeat_residual_blocks(repeat=4,
                                                     x=conv2,
                                                     block=self.residual_block_b,
@@ -67,6 +67,13 @@ class ResNetV2(ImgClfModel):
                                                     pool=True)
                 if self.model_type is "152":
                     conv3 = self.repeat_residual_blocks(repeat=4,
+                                                        x=conv3,
+                                                        block=self.residual_block_b,
+                                                        num_outputs=[128,128,512], kernel_sizes=[[1,1], [3,3], [1,1]],
+                                                        pool=False)
+
+                if self.model_type is "200":
+                    conv3 = self.repeat_residual_blocks(repeat=16,
                                                         x=conv3,
                                                         block=self.residual_block_b,
                                                         num_outputs=[128,128,512], kernel_sizes=[[1,1], [3,3], [1,1]],
@@ -88,21 +95,21 @@ class ResNetV2(ImgClfModel):
                                                         num_outputs=[256,256], kernel_sizes=[[3,3], [3,3]],
                                                         pool=False)
 
-            elif self.model_type is "50" or self.model_type is "101" or self.model_type is "152":
+            elif self.model_type is "50" or self.model_type is "101" or self.model_type is "152" or self.model_type is "200":
                 conv4 = self.repeat_residual_blocks(repeat=6,
                                                     x=conv3,
                                                     block=self.residual_block_b,
                                                     num_outputs=[256,256,1024], kernel_sizes=[[1,1], [3,3], [1,1]],
                                                     pool=True)
 
-                if self.model_type is "101" or self.model_type is "152":
+                if self.model_type is "101" or self.model_type is "152" or self.model_type is "200":
                     conv4 = self.repeat_residual_blocks(repeat=17,
                                                         x=conv4,
                                                         block=self.residual_block_b,
                                                         num_outputs=[256,256,1024], kernel_sizes=[[1,1], [3,3], [1,1]],
                                                         pool=False)
 
-                if self.model_type is "152":
+                if self.model_type is "152" or self.model_type is "200":
                     conv4 = self.repeat_residual_blocks(repeat=77,
                                                         x=conv4,
                                                         block=self.residual_block_b,
@@ -125,7 +132,7 @@ class ResNetV2(ImgClfModel):
                                                         num_outputs=[512,512], kernel_sizes=[[3,3], [3,3]],
                                                         pool=True)
 
-            elif self.model_type is "50" or self.model_type is "101" or self.model_type is "152":
+            elif self.model_type is "50" or self.model_type is "101" or self.model_type is "152" or self.model_type is "200":
                 conv5 = self.repeat_residual_blocks(repeat=3,
                                                     x=conv4,
                                                     block=self.residual_block_b,
