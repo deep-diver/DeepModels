@@ -57,8 +57,8 @@ pip install -r requirements.txt
 - **[Residual Network V2](https://arxiv.org/pdf/1603.05027.pdf)** | 2016 | [[CODE]](./models/resnet_v2.py)
 - **[Inception V4](https://arxiv.org/pdf/1602.07261.pdf)** | 2016 | [[CODE]](./models/inception_v4.py)
 - **[Inception+Resnet V1](https://arxiv.org/pdf/1602.07261.pdf)** | 2016 | [[CODE]](./models/inception_resnet_v1.py)
+- **[Inception+Resnet V2](https://arxiv.org/pdf/1602.07261.pdf)** | 2016 | [[CODE]](./models/inception_resnet_v2.py)
 - **Things to be added**
-  - **[Inception+Resnet V2](https://arxiv.org/pdf/1602.07261.pdf)** | 2016
   - **[DenseNet](https://arxiv.org/pdf/1608.06993.pdf)** | 2016
   - **[SqueezeNet](https://arxiv.org/abs/1602.07360)** | 2016
   - **[MobileNet](https://arxiv.org/pdf/1704.04861.pdf)** | 2017
