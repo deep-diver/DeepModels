@@ -72,29 +72,29 @@ class Inception_ResnetV2(ImgClfModel):
                 branch_a = conv2d(prev, num_outputs=32,
                                   kernel_size=[1,1], stride=1, padding='SAME',
                                   activation_fn=tf.nn.relu)
-                branch_a = tf.nn.batch_normalization(branch_a)
+                branch_a = tf.layers.batch_normalization(branch_a)
 
                 branch_b = conv2d(prev, num_outputs=32,
                                   kernel_size=[1,1], stride=1, padding='SAME',
                                   activation_fn=tf.nn.relu)
-                branch_b = tf.nn.batch_normalization(branch_b)
+                branch_b = tf.layers.batch_normalization(branch_b)
                 branch_b = conv2d(branch_b, num_outputs=32,
                                   kernel_size=[3,3], stride=1, padding='SAME',
                                   activation_fn=tf.nn.relu)
-                branch_b = tf.nn.batch_normalization(branch_b)
+                branch_b = tf.layers.batch_normalization(branch_b)
 
                 branch_c = conv2d(prev, num_outputs=32,
                                   kernel_size=[1,1], stride=1, padding='SAME',
                                   activation_fn=tf.nn.relu)
-                branch_c = tf.nn.batch_normalization(branch_c)
+                branch_c = tf.layers.batch_normalization(branch_c)
                 branch_c = conv2d(branch_c, num_outputs=48,
                                   kernel_size=[3,3], stride=1, padding='SAME',
                                   activation_fn=tf.nn.relu)
-                branch_c = tf.nn.batch_normalization(branch_c)
+                branch_c = tf.layers.batch_normalization(branch_c)
                 branch_c = conv2d(branch_c, num_outputs=64,
                                   kernel_size=[3,3], stride=1, padding='SAME',
                                   activation_fn=tf.nn.relu)
-                branch_c = tf.nn.batch_normalization(branch_c)
+                branch_c = tf.layers.batch_normalization(branch_c)
 
                 layers_concat = list()
                 layers_concat.append(branch_a)
@@ -104,7 +104,7 @@ class Inception_ResnetV2(ImgClfModel):
                 merge = conv2d(merge, num_outputs=384,
                                kernel_size=[1,1], stride=1, padding='SAME',
                                activation_fn=tf.nn.relu)
-                merge = tf.nn.batch_normalization(merge)
+                merge = tf.layers.batch_normalization(merge)
 
                 prev = tf.nn.relu(merge + identity)
                 prev = tf.layers.batch_normalization(prev)
@@ -138,20 +138,20 @@ class Inception_ResnetV2(ImgClfModel):
                 branch_a = conv2d(prev, num_outputs=192,
                                   kernel_size=[1,1], stride=1, padding='SAME',
                                   activation_fn=tf.nn.relu)
-                branch_a = tf.nn.batch_normalization(branch_a)
+                branch_a = tf.layers.batch_normalization(branch_a)
 
                 branch_b = conv2d(prev, num_outputs=128,
                                   kernel_size=[1,1], stride=1, padding='SAME',
                                   activation_fn=tf.nn.relu)
-                branch_b = tf.nn.batch_normalization(branch_b)
+                branch_b = tf.layers.batch_normalization(branch_b)
                 branch_b = conv2d(branch_b, num_outputs=160,
                                   kernel_size=[1,7], stride=1, padding='SAME',
                                   activation_fn=tf.nn.relu)
-                branch_b = tf.nn.batch_normalization(branch_b)
+                branch_b = tf.layers.batch_normalization(branch_b)
                 branch_b = conv2d(branch_b, num_outputs=192,
                                   kernel_size=[7,1], stride=1, padding='SAME',
                                   activation_fn=tf.nn.relu)
-                branch_b = tf.nn.batch_normalization(branch_b)
+                branch_b = tf.layers.batch_normalization(branch_b)
 
                 layers_concat = list()
                 layers_concat.append(branch_a)
@@ -160,7 +160,7 @@ class Inception_ResnetV2(ImgClfModel):
                 merge = conv2d(merge, num_outputs=1154,
                                kernel_size=[1,1], stride=1, padding='SAME',
                                activation_fn=tf.nn.relu)
-                merge = tf.nn.batch_normalization(merge)
+                merge = tf.layers.batch_normalization(merge)
 
                 prev = tf.nn.relu(merge + identity)
                 prev = tf.layers.batch_normalization(prev)
@@ -205,16 +205,16 @@ class Inception_ResnetV2(ImgClfModel):
                 branch_a = conv2d(prev, num_outputs=192,
                                   kernel_size=[1,1], stride=1, padding='SAME',
                                   activation_fn=tf.nn.relu)
-                branch_a = tf.nn.batch_normalization(branch_a)
+                branch_a = tf.layers.batch_normalization(branch_a)
 
                 branch_b = conv2d(prev, num_outputs=192,
                                   kernel_size=[1,1], stride=1, padding='SAME',
                                   activation_fn=tf.nn.relu)
-                branch_b = tf.nn.batch_normalization(branch_b)
+                branch_b = tf.layers.batch_normalization(branch_b)
                 branch_b = conv2d(branch_b, num_outputs=224,
                                   kernel_size=[1,3], stride=1, padding='SAME',
                                   activation_fn=tf.nn.relu)
-                branch_b = tf.nn.batch_normalization(branch_b)
+                branch_b = tf.layers.batch_normalization(branch_b)
                 branch_b = conv2d(branch_b, num_outputs=256,
                                   kernel_size=[3,1], stride=1, padding='SAME',
                                   activation_fn=tf.nn.relu)
@@ -226,7 +226,7 @@ class Inception_ResnetV2(ImgClfModel):
                 merge = conv2d(merge, num_outputs=2048,
                                kernel_size=[1,1], stride=1, padding='SAME',
                                activation_fn=tf.nn.relu)
-                merge = tf.nn.batch_normalization(merge)
+                merge = tf.layers.batch_normalization(merge)
 
                 prev = tf.nn.relu(merge + identity)
                 prev = tf.layers.batch_normalization(prev)
