@@ -20,97 +20,25 @@ class DenseNet(ImgClfModel):
         theta = self.theta
 
         with tf.variable_scope('initial_block'):
-            prev_kernels = 2*k
-
             conv = tf.layers.batch_normalization(input)
             conv = tf.nn.relu(conv)
-            conv = conv2d(conv, num_outputs=prev_kernels,
+            conv = conv2d(input, num_outputs=2*k,
                           kernel_size=[7,7], stride=2, padding='SAME',
                           activation_fn=None)
 
             pool = max_pool2d(conv, kernel_size=[3,3], stride=2, padding='SAME')
-            cur_layer = pool
+            prev_kernels = 2*k
+            input_kernels = prev_kernels
 
-        input_kernels = prev_kernels
+        cur_layer = pool
         layers_concat = list()
 
         with tf.variable_scope('dense_block_1'):
             for i in range(6):
+                cur_kernels = 4 * k
                 bottlenect = tf.layers.batch_normalization(cur_layer)
                 bottlenect = tf.nn.relu(bottlenect)
-                bottlenect = conv2d(bottlenect, num_outputs=4*k,
-                                    kernel_size=[1,1], stride=1, padding='SAME',
-                                    activation_fn=None)
-
-                cur_kernels = input_kernels + (k * i)
-                conv = tf.layers.batch_normalization(bottlenect)
-                conv = tf.nn.relu(conv)
-                conv = conv2d(conv, num_outputs=cur_kernels,
-                              kernel_size=[3,3], stride=1, padding='SAME',
-                              activation_fn=None)
-
-                if i is 5:
-                    cur_layer = conv
-                else:
-                    layers_concat.append(conv)
-                    cur_layer = tf.concat(layers_concat, 3)
-
-            prev_kernels = cur_kernels
-
-        with tf.variable_scope('transition_block_1'):
-            prev_kernels = int(prev_kernels*theta)
-            bottlenect = tf.layers.batch_normalization(cur_layer)
-            bottlenect = conv2d(bottlenect, num_outputs=prev_kernels,
-                                kernel_size=[1,1], stride=1, padding='SAME',
-                                activation_fn=tf.nn.relu)
-
-            pool = avg_pool2d(bottlenect, kernel_size=[2,2], stride=2, padding='SAME')
-            cur_layer = pool
-            input_kernels = prev_kernels
-
-        layers_concat = list()
-
-        with tf.variable_scope('dense_block_2'):
-            for i in range(12):
-                bottlenect = tf.layers.batch_normalization(cur_layer)
-                bottlenect = tf.nn.relu(bottlenect)
-                bottlenect = conv2d(bottlenect, num_outputs=4*k,
-                                    kernel_size=[1,1], stride=1, padding='SAME',
-                                    activation_fn=None)
-
-                cur_kernels = input_kernels + (k * i)
-                conv = tf.layers.batch_normalization(bottlenect)
-                conv = tf.nn.relu(conv)
-                conv = conv2d(conv, num_outputs=cur_kernels,
-                              kernel_size=[3,3], stride=1, padding='SAME',
-                              activation_fn=None)
-
-                if i is 5:
-                    cur_layer = conv
-                else:
-                    layers_concat.append(conv)
-                    cur_layer = tf.concat(layers_concat, 3)
-
-            prev_kernels = cur_kernels
-
-        with tf.variable_scope('transition_block_2'):
-            prev_kernels = int(prev_kernels*theta)
-            bottlenect = tf.layers.batch_normalization(cur_layer)
-            bottlenect = conv2d(bottlenect, num_outputs=prev_kernels,
-                                kernel_size=[1,1], stride=1, padding='SAME',
-                                activation_fn=tf.nn.relu)
-
-            pool = avg_pool2d(bottlenect, kernel_size=[2,2], stride=2, padding='SAME')
-            cur_layer = pool
-            input_kernels = prev_kernels
-
-        layers_concat = list()
-
-        with tf.variable_scope('dense_block_3'):
-            for i in range(24):
-                bottlenect = tf.layers.batch_normalization(cur_layer)
-                bottlenect = tf.nn.relu(bottlenect)
-                bottlenect = conv2d(bottlenect, num_outputs=4*k,
+                bottlenect = conv2d(bottlenect, num_outputs=cur_kernels,
                                     kernel_size=[1,1], stride=1, padding='SAME',
                                     activation_fn=None)
 
@@ -123,26 +51,27 @@ class DenseNet(ImgClfModel):
 
                 layers_concat.append(conv)
                 cur_layer = tf.concat(layers_concat, 3)
-            prev_kernels = cur_kernels
+                prev_kernels = cur_kernels
 
-        with tf.variable_scope('transition_block_3'):
-            prev_kernels = int(prev_kernels*theta)
+        with tf.variable_scope('transition_block_1'):
             bottlenect = tf.layers.batch_normalization(cur_layer)
-            bottlenect = conv2d(bottlenect, num_outputs=prev_kernels,
+            bottlenect = conv2d(bottlenect, num_outputs=int(prev_kernels*theta),
                                 kernel_size=[1,1], stride=1, padding='SAME',
                                 activation_fn=tf.nn.relu)
 
             pool = avg_pool2d(bottlenect, kernel_size=[2,2], stride=2, padding='SAME')
-            cur_layer = pool
+            prev_kernels = int(prev_kernels*theta)
             input_kernels = prev_kernels
 
+        cur_layer = pool
         layers_concat = list()
 
-        with tf.variable_scope('dense_block_4'):
-            for i in range(16):
+        with tf.variable_scope('dense_block_2'):
+            for i in range(12):
+                cur_kernels = 4 * k
                 bottlenect = tf.layers.batch_normalization(cur_layer)
                 bottlenect = tf.nn.relu(bottlenect)
-                bottlenect = conv2d(bottlenect, num_outputs=4*k,
+                bottlenect = conv2d(bottlenect, num_outputs=cur_kernels,
                                     kernel_size=[1,1], stride=1, padding='SAME',
                                     activation_fn=None)
 
@@ -153,11 +82,87 @@ class DenseNet(ImgClfModel):
                               kernel_size=[3,3], stride=1, padding='SAME',
                               activation_fn=None)
 
-                if i is 5:
-                    cur_layer = conv
-                else:
-                    layers_concat.append(conv)
-                    cur_layer = tf.concat(layers_concat, 3)
+                layers_concat.append(conv)
+                cur_layer = tf.concat(layers_concat, 3)
+                prev_kernels = cur_kernels
+
+        with tf.variable_scope('transition_block_2'):
+            bottlenect = tf.layers.batch_normalization(cur_layer)
+            bottlenect = conv2d(bottlenect, num_outputs=int(prev_kernels*theta),
+                                kernel_size=[1,1], stride=1, padding='SAME',
+                                activation_fn=tf.nn.relu)
+
+            pool = avg_pool2d(bottlenect, kernel_size=[2,2], stride=2, padding='SAME')
+            prev_kernels = int(prev_kernels*theta)
+            input_kernels = prev_kernels
+
+        cur_layer = pool
+        layers_concat = list()
+        dense_block_3_iter = 24
+        if self.model_type is "169":
+            dense_block_3_iter = 32
+        elif self.model_type is "201":
+            dense_block_3_iter = 48
+        elif self.model_type is "264":
+            dense_block_3_iter = 64
+
+        with tf.variable_scope('dense_block_3'):
+            for i in range(dense_block_3_iter):
+                cur_kernels = 4 * k
+                bottlenect = tf.layers.batch_normalization(cur_layer)
+                bottlenect = tf.nn.relu(bottlenect)
+                bottlenect = conv2d(bottlenect, num_outputs=cur_kernels,
+                                    kernel_size=[1,1], stride=1, padding='SAME',
+                                    activation_fn=None)
+
+                cur_kernels = input_kernels + (k * i)
+                conv = tf.layers.batch_normalization(bottlenect)
+                conv = tf.nn.relu(conv)
+                conv = conv2d(conv, num_outputs=cur_kernels,
+                              kernel_size=[3,3], stride=1, padding='SAME',
+                              activation_fn=None)
+
+                layers_concat.append(conv)
+                cur_layer = tf.concat(layers_concat, 3)
+                prev_kernels = cur_kernels
+
+        with tf.variable_scope('transition_block_3'):
+            bottlenect = tf.layers.batch_normalization(cur_layer)
+            bottlenect = conv2d(bottlenect, num_outputs=int(prev_kernels*theta),
+                                kernel_size=[1,1], stride=1, padding='SAME',
+                                activation_fn=tf.nn.relu)
+
+            pool = avg_pool2d(bottlenect, kernel_size=[2,2], stride=2, padding='SAME')
+            prev_kernels = int(prev_kernels*theta)
+            input_kernels = prev_kernels
+
+        cur_layer = pool
+        layers_concat = list()
+        dense_block_4_iter = 16
+        if self.model_type is "169" or self.model_type is "201":
+            dense_block_4_iter = 32
+        elif self.model_type is "264":
+            dense_block_4_iter = 48
+
+        with tf.variable_scope('dense_block_4'):
+            for i in range(dense_block_4_iter):
+                cur_kernels = 4 * k
+                bottlenect = tf.layers.batch_normalization(cur_layer)
+                bottlenect = tf.nn.relu(bottlenect)
+                bottlenect = conv2d(bottlenect, num_outputs=cur_kernels,
+                                    kernel_size=[1,1], stride=1, padding='SAME',
+                                    activation_fn=None)
+
+                cur_kernels = input_kernels + (k * i)
+                conv = tf.layers.batch_normalization(bottlenect)
+                conv = tf.nn.relu(conv)
+                conv = conv2d(conv, num_outputs=cur_kernels,
+                              kernel_size=[3,3], stride=1, padding='SAME',
+                              activation_fn=None)
+
+                layers_concat.append(conv)
+                cur_layer = tf.concat(layers_concat, 3)
+                prev_kernels = cur_kernels
 
         with tf.variable_scope('final'):
             pool = avg_pool2d(cur_layer, kernel_size=[7,7], stride=1, padding='SAME')
