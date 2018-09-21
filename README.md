@@ -45,21 +45,25 @@ pip install -r requirements.txt
 
 #### Models
 - **[AlexNet](https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf)** | 2012 | [[CODE]](./models/alexnet.py)
-- **[VGG](https://arxiv.org/pdf/1409.1556.pdf)** (model type = [A | A-LRN | B | C | D | E]) | 2014 | [[CODE]](./models/vgg.py)
-  - **A:** 11 layers, **A-LRN:** 11 layers with LRN (Local Response Normalization)
-  - **B:** 13 layers, **C:** 13 layers with additional convolutional layer whose kernel size is 1x1
-  - **D:** 16 layers (known as **VGG16**)
-  - **E:** 19 layers (known as **VGG19**)
+- **[VGG](https://arxiv.org/pdf/1409.1556.pdf)** | 2014 | [[CODE]](./models/vgg.py)
+  - model types
+    - **A:** 11 layers, **A-LRN:** 11 layers with LRN (Local Response Normalization)
+    - **B:** 13 layers, **C:** 13 layers with additional convolutional layer whose kernel size is 1x1
+    - **D:** 16 layers (known as **VGG16**)
+    - **E:** 19 layers (known as **VGG19**)
 - **[Inception V1 (GoogLeNet)](https://arxiv.org/pdf/1409.4842.pdf)** | 2014 | [[CODE]](./models/googlenet.py)
-- **[Residual Network](https://arxiv.org/pdf/1512.03385.pdf)** (model type = [18 | 34 | 50 | 101 | 152]) | 2015 | [[CODE]](./models/resnet.py)
+- **[Residual Network](https://arxiv.org/pdf/1512.03385.pdf)** | 2015 | [[CODE]](./models/resnet.py)
+  - model types (depth): 18, 34, 50, 101, 152
 - **[Inception V2](https://arxiv.org/pdf/1512.00567v3.pdf)** | 2015 | [[CODE]](./models/inception_v2.py)
 - **[Inception V3](https://arxiv.org/pdf/1512.00567v3.pdf)** | 2015 | [[CODE]](./models/inception_v3.py)
 - **[Residual Network V2](https://arxiv.org/pdf/1603.05027.pdf)** | 2016 | [[CODE]](./models/resnet_v2.py)
+  - model types (depth): 18, 34, 50, 101, 152, 200
 - **[Inception V4](https://arxiv.org/pdf/1602.07261.pdf)** | 2016 | [[CODE]](./models/inception_v4.py)
 - **[Inception+Resnet V1](https://arxiv.org/pdf/1602.07261.pdf)** | 2016 | [[CODE]](./models/inception_resnet_v1.py)
 - **[Inception+Resnet V2](https://arxiv.org/pdf/1602.07261.pdf)** | 2016 | [[CODE]](./models/inception_resnet_v2.py)
+- **[DenseNet](https://arxiv.org/pdf/1608.06993.pdf)** | 2017 | [[CODE]](./models/densenet.py)
+  - model types (depth): 121, 169, 201, 264
 - **Things to be added**
-  - **[DenseNet](https://arxiv.org/pdf/1608.06993.pdf)** | 2016
   - **[SqueezeNet](https://arxiv.org/abs/1602.07360)** | 2016
   - **[MobileNet](https://arxiv.org/pdf/1704.04861.pdf)** | 2017
   - **[NASNet](https://arxiv.org/pdf/1707.07012.pdf)** | 2017
