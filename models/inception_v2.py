@@ -163,14 +163,13 @@ class InceptionV2(ImgClfModel):
             self.aux = prev
 
         with tf.variable_scope('grid_reduction_b'):
-            branch_a = conv2d(prev, num_outputs=192,
+            branch_base = conv2d(prev, num_outputs=192,
                               kernel_size=[1,1], stride=1, padding='SAME')
-            branch_a = conv2d(branch_a, num_outputs=320,
+
+            branch_a = conv2d(branch_base, num_outputs=320,
                               kernel_size=[3,3], stride=2, padding='VALID')
 
-            branch_b = conv2d(prev, num_outputs=192,
-                              kernel_size=[1,1], stride=1, padding='SAME')
-            branch_b = conv2d(branch_b, num_outputs=192,
+            branch_b = conv2d(branch_base, num_outputs=192,
                               kernel_size=[1,7], stride=1, padding='SAME')
             branch_b = conv2d(branch_b, num_outputs=192,
                               kernel_size=[7,1], stride=1, padding='SAME')
