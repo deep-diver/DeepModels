@@ -41,7 +41,7 @@ class DenseNet(ImgClfModel):
                 bottlenect = conv2d(bottlenect, num_outputs=cur_kernels,
                                     kernel_size=[1,1], stride=1, padding='SAME',
                                     activation_fn=None)
-                bottlenect = tf.nn.dropout(bottlenect, 0.2)
+                bottlenect = tf.layers.dropout(bottlenect, 0.2)
 
                 cur_kernels = input_kernels + (k * i)
                 conv = tf.layers.batch_normalization(bottlenect)
@@ -49,10 +49,11 @@ class DenseNet(ImgClfModel):
                 conv = conv2d(conv, num_outputs=cur_kernels,
                               kernel_size=[3,3], stride=1, padding='SAME',
                               activation_fn=None)
-                conv = tf.nn.dropout(conv, 0.2)
+                conv = tf.layers.dropout(conv, 0.2)
 
                 layers_concat.append(conv)
                 cur_layer = tf.concat(layers_concat, 3)
+                print(cur_layer)
                 prev_kernels = cur_kernels
 
         with tf.variable_scope('transition_block_1'):
@@ -60,7 +61,7 @@ class DenseNet(ImgClfModel):
             bottlenect = conv2d(bottlenect, num_outputs=int(prev_kernels*theta),
                                 kernel_size=[1,1], stride=1, padding='SAME',
                                 activation_fn=tf.nn.relu)
-            bottlenect = tf.nn.dropout(bottlenect, 0.2)
+            bottlenect = tf.layers.dropout(bottlenect, 0.2)
 
             pool = avg_pool2d(bottlenect, kernel_size=[2,2], stride=2, padding='SAME')
             prev_kernels = int(prev_kernels*theta)
@@ -77,7 +78,7 @@ class DenseNet(ImgClfModel):
                 bottlenect = conv2d(bottlenect, num_outputs=cur_kernels,
                                     kernel_size=[1,1], stride=1, padding='SAME',
                                     activation_fn=None)
-                bottlenect = tf.nn.dropout(bottlenect, 0.2)
+                bottlenect = tf.layers.dropout(bottlenect, 0.2)
 
                 cur_kernels = input_kernels + (k * i)
                 conv = tf.layers.batch_normalization(bottlenect)
@@ -85,10 +86,11 @@ class DenseNet(ImgClfModel):
                 conv = conv2d(conv, num_outputs=cur_kernels,
                               kernel_size=[3,3], stride=1, padding='SAME',
                               activation_fn=None)
-                conv = tf.nn.dropout(conv, 0.2)
+                conv = tf.layers.dropout(conv, 0.2)
 
                 layers_concat.append(conv)
                 cur_layer = tf.concat(layers_concat, 3)
+                print(cur_layer)
                 prev_kernels = cur_kernels
 
         with tf.variable_scope('transition_block_2'):
@@ -96,7 +98,7 @@ class DenseNet(ImgClfModel):
             bottlenect = conv2d(bottlenect, num_outputs=int(prev_kernels*theta),
                                 kernel_size=[1,1], stride=1, padding='SAME',
                                 activation_fn=tf.nn.relu)
-            bottlenect = tf.nn.dropout(bottlenect, 0.2)
+            bottlenect = tf.layers.dropout(bottlenect, 0.2)
 
             pool = avg_pool2d(bottlenect, kernel_size=[2,2], stride=2, padding='SAME')
             prev_kernels = int(prev_kernels*theta)
@@ -120,7 +122,7 @@ class DenseNet(ImgClfModel):
                 bottlenect = conv2d(bottlenect, num_outputs=cur_kernels,
                                     kernel_size=[1,1], stride=1, padding='SAME',
                                     activation_fn=None)
-                bottlenect = tf.nn.dropout(bottlenect, 0.2)
+                bottlenect = tf.layers.dropout(bottlenect, 0.2)
 
                 cur_kernels = input_kernels + (k * i)
                 conv = tf.layers.batch_normalization(bottlenect)
@@ -128,10 +130,11 @@ class DenseNet(ImgClfModel):
                 conv = conv2d(conv, num_outputs=cur_kernels,
                               kernel_size=[3,3], stride=1, padding='SAME',
                               activation_fn=None)
-                conv = tf.nn.dropout(conv, 0.2)
+                conv = tf.layers.dropout(conv, 0.2)
 
                 layers_concat.append(conv)
                 cur_layer = tf.concat(layers_concat, 3)
+                print(cur_layer)
                 prev_kernels = cur_kernels
 
         with tf.variable_scope('transition_block_3'):
@@ -139,7 +142,7 @@ class DenseNet(ImgClfModel):
             bottlenect = conv2d(bottlenect, num_outputs=int(prev_kernels*theta),
                                 kernel_size=[1,1], stride=1, padding='SAME',
                                 activation_fn=tf.nn.relu)
-            bottlenect = tf.nn.dropout(bottlenect, 0.2)
+            bottlenect = tf.layers.dropout(bottlenect, 0.2)
 
             pool = avg_pool2d(bottlenect, kernel_size=[2,2], stride=2, padding='SAME')
             prev_kernels = int(prev_kernels*theta)
@@ -161,7 +164,7 @@ class DenseNet(ImgClfModel):
                 bottlenect = conv2d(bottlenect, num_outputs=cur_kernels,
                                     kernel_size=[1,1], stride=1, padding='SAME',
                                     activation_fn=None)
-                bottlenect = tf.nn.dropout(bottlenect, 0.2)
+                bottlenect = tf.layers.dropout(bottlenect, 0.2)
 
                 cur_kernels = input_kernels + (k * i)
                 conv = tf.layers.batch_normalization(bottlenect)
@@ -169,10 +172,11 @@ class DenseNet(ImgClfModel):
                 conv = conv2d(conv, num_outputs=cur_kernels,
                               kernel_size=[3,3], stride=1, padding='SAME',
                               activation_fn=None)
-                conv = tf.nn.dropout(conv, 0.2)
+                conv = tf.layers.dropout(conv, 0.2)
 
                 layers_concat.append(conv)
                 cur_layer = tf.concat(layers_concat, 3)
+                print(cur_layer)
                 prev_kernels = cur_kernels
 
         with tf.variable_scope('final'):

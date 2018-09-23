@@ -14,9 +14,9 @@ from models.inception_v3 import InceptionV3
 from models.densenet import DenseNet
 from trainers.clftrainer import ClfTrainer
 
-learning_rate = 0.0001
-epochs = 2
-batch_size = 4
+learning_rate = 0.0000001
+epochs = 1
+batch_size = 2
 
 import warnings
 
@@ -30,7 +30,7 @@ def main():
     # model = GoogLeNet()
     # model = ResNet(model_type="101")
     # model = InceptionV3()
-    model = DenseNet()
+    model = DenseNet(model_type="201")
 
     # training
     trainer = ClfTrainer(model, dataset)
